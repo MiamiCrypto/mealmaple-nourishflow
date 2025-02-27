@@ -11,7 +11,9 @@ import {
   Clock, 
   BadgeCheck, 
   Tag,
-  ChevronDown
+  ChevronDown,
+  Database,
+  Globe
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -23,6 +25,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { SpoonacularRecipeSearch } from "@/components/spoonacular-recipe-search";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
 // Extended recipe data for the recipe page
 interface RecipeData {
@@ -222,202 +231,221 @@ const Recipes = () => {
             />
           </div>
           
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search recipes or ingredients..."
-                className="pl-8"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+          <Tabs defaultValue="local" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="local" className="flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                Local Recipes
+              </TabsTrigger>
+              <TabsTrigger value="spoonacular" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                Search Online
+              </TabsTrigger>
+            </TabsList>
             
-            <div className="flex gap-2 flex-wrap md:flex-nowrap">
-              {/* Meal Type Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-1">
-                    <Tag className="h-4 w-4" />
-                    <span className="hidden sm:inline">Meal Type</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>Meal Type</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => setSelectedMealType("breakfast")}>
-                      <span className="meal-badge meal-badge-breakfast mr-2">B</span>
-                      Breakfast
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedMealType("lunch")}>
-                      <span className="meal-badge meal-badge-lunch mr-2">L</span>
-                      Lunch
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedMealType("dinner")}>
-                      <span className="meal-badge meal-badge-dinner mr-2">D</span>
-                      Dinner
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedMealType("snack")}>
-                      <span className="meal-badge meal-badge-snack mr-2">S</span>
-                      Snack
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              {/* Time Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-1">
-                    <Clock className="h-4 w-4" />
-                    <span className="hidden sm:inline">Time</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>Preparation Time</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => setSelectedTimeFilter(15)}>
-                      Under 15 minutes
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedTimeFilter(30)}>
-                      Under 30 minutes
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedTimeFilter(45)}>
-                      Under 45 minutes
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedTimeFilter(60)}>
-                      Under 60 minutes
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              {/* Difficulty Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-1">
-                    <BadgeCheck className="h-4 w-4" />
-                    <span className="hidden sm:inline">Difficulty</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>Difficulty Level</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => setSelectedDifficulty("easy")}>
-                      Easy
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedDifficulty("medium")}>
-                      Medium
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSelectedDifficulty("hard")}>
-                      Hard
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              {/* More Filters */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-1">
-                    <SlidersHorizontal className="h-4 w-4" />
-                    <span className="hidden sm:inline">More Filters</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>Dietary Preferences</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem>Vegetarian</DropdownMenuItem>
-                    <DropdownMenuItem>Vegan</DropdownMenuItem>
-                    <DropdownMenuItem>Gluten-Free</DropdownMenuItem>
-                    <DropdownMenuItem>Low-Carb</DropdownMenuItem>
-                    <DropdownMenuItem>High-Protein</DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              {/* Clear Filters */}
-              <Button variant="ghost" onClick={handleClearFilters}>
-                Clear Filters
-              </Button>
-            </div>
-          </div>
-          
-          {/* Filter Pills */}
-          {(selectedMealType || selectedDifficulty || selectedTimeFilter) && (
-            <div className="flex flex-wrap gap-2">
-              {selectedMealType && (
-                <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                  <span>Meal: {selectedMealType.charAt(0).toUpperCase() + selectedMealType.slice(1)}</span>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-4 w-4 ml-1 hover:bg-transparent" 
-                    onClick={() => setSelectedMealType(null)}
-                  >
-                    ×
+            <TabsContent value="local" className="space-y-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search recipes or ingredients..."
+                    className="pl-8"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                
+                <div className="flex gap-2 flex-wrap md:flex-nowrap">
+                  {/* Meal Type Filter */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="gap-1">
+                        <Tag className="h-4 w-4" />
+                        <span className="hidden sm:inline">Meal Type</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Meal Type</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onClick={() => setSelectedMealType("breakfast")}>
+                          <span className="meal-badge meal-badge-breakfast mr-2">B</span>
+                          Breakfast
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedMealType("lunch")}>
+                          <span className="meal-badge meal-badge-lunch mr-2">L</span>
+                          Lunch
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedMealType("dinner")}>
+                          <span className="meal-badge meal-badge-dinner mr-2">D</span>
+                          Dinner
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedMealType("snack")}>
+                          <span className="meal-badge meal-badge-snack mr-2">S</span>
+                          Snack
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  
+                  {/* Time Filter */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="gap-1">
+                        <Clock className="h-4 w-4" />
+                        <span className="hidden sm:inline">Time</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Preparation Time</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onClick={() => setSelectedTimeFilter(15)}>
+                          Under 15 minutes
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedTimeFilter(30)}>
+                          Under 30 minutes
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedTimeFilter(45)}>
+                          Under 45 minutes
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedTimeFilter(60)}>
+                          Under 60 minutes
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  
+                  {/* Difficulty Filter */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="gap-1">
+                        <BadgeCheck className="h-4 w-4" />
+                        <span className="hidden sm:inline">Difficulty</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Difficulty Level</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onClick={() => setSelectedDifficulty("easy")}>
+                          Easy
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedDifficulty("medium")}>
+                          Medium
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setSelectedDifficulty("hard")}>
+                          Hard
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  
+                  {/* More Filters */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="gap-1">
+                        <SlidersHorizontal className="h-4 w-4" />
+                        <span className="hidden sm:inline">More Filters</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Dietary Preferences</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>Vegetarian</DropdownMenuItem>
+                        <DropdownMenuItem>Vegan</DropdownMenuItem>
+                        <DropdownMenuItem>Gluten-Free</DropdownMenuItem>
+                        <DropdownMenuItem>Low-Carb</DropdownMenuItem>
+                        <DropdownMenuItem>High-Protein</DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  
+                  {/* Clear Filters */}
+                  <Button variant="ghost" onClick={handleClearFilters}>
+                    Clear Filters
                   </Button>
                 </div>
-              )}
-              {selectedDifficulty && (
-                <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                  <span>Difficulty: {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}</span>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-4 w-4 ml-1 hover:bg-transparent" 
-                    onClick={() => setSelectedDifficulty(null)}
-                  >
-                    ×
-                  </Button>
-                </div>
-              )}
-              {selectedTimeFilter && (
-                <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                  <span>Time: Under {selectedTimeFilter} minutes</span>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-4 w-4 ml-1 hover:bg-transparent" 
-                    onClick={() => setSelectedTimeFilter(null)}
-                  >
-                    ×
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Recipe Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredRecipes.map((recipe, index) => (
-              <RecipeCard
-                key={recipe.id}
-                {...recipe}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms` }}
-                onAddToMealPlan={handleAddToMealPlan}
-              />
-            ))}
-            
-            {filteredRecipes.length === 0 && (
-              <div className="col-span-full text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No recipes found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your filters or search terms
-                </p>
               </div>
-            )}
-          </div>
+              
+              {/* Filter Pills */}
+              {(selectedMealType || selectedDifficulty || selectedTimeFilter) && (
+                <div className="flex flex-wrap gap-2">
+                  {selectedMealType && (
+                    <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                      <span>Meal: {selectedMealType.charAt(0).toUpperCase() + selectedMealType.slice(1)}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-4 w-4 ml-1 hover:bg-transparent" 
+                        onClick={() => setSelectedMealType(null)}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  )}
+                  {selectedDifficulty && (
+                    <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                      <span>Difficulty: {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-4 w-4 ml-1 hover:bg-transparent" 
+                        onClick={() => setSelectedDifficulty(null)}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  )}
+                  {selectedTimeFilter && (
+                    <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                      <span>Time: Under {selectedTimeFilter} minutes</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-4 w-4 ml-1 hover:bg-transparent" 
+                        onClick={() => setSelectedTimeFilter(null)}
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Recipe Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredRecipes.map((recipe, index) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    {...recipe}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                    onAddToMealPlan={handleAddToMealPlan}
+                  />
+                ))}
+                
+                {filteredRecipes.length === 0 && (
+                  <div className="col-span-full text-center py-12">
+                    <h3 className="text-lg font-medium mb-2">No recipes found</h3>
+                    <p className="text-muted-foreground">
+                      Try adjusting your filters or search terms
+                    </p>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="spoonacular">
+              <SpoonacularRecipeSearch />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
     </div>
