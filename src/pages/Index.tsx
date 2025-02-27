@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { OnboardingSteps } from "@/components/onboarding-steps";
@@ -16,6 +15,7 @@ import {
 
 const Index = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const navigate = useNavigate();
   
   const handleStartOnboarding = () => {
     setShowOnboarding(true);
@@ -25,6 +25,10 @@ const Index = () => {
     setShowOnboarding(false);
     // In a real app, we would navigate to dashboard after onboarding
     window.location.href = "/dashboard";
+  };
+
+  const handleBrowseRecipes = () => {
+    navigate("/recipes");
   };
   
   return (
@@ -55,8 +59,8 @@ const Index = () => {
                       Get Started
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
-                    <Button size="lg" variant="outline" asChild>
-                      <Link to="/recipes">Browse Recipes</Link>
+                    <Button size="lg" variant="outline" onClick={handleBrowseRecipes}>
+                      Browse Recipes
                     </Button>
                   </div>
                 </div>
