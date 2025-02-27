@@ -13,6 +13,7 @@ export interface RecipeCardProps {
   servings: number;
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack';
   className?: string;
+  style?: React.CSSProperties;
   onAddToMealPlan?: (recipeId: string) => void;
 }
 
@@ -24,6 +25,7 @@ export function RecipeCard({
   servings, 
   mealType,
   className,
+  style,
   onAddToMealPlan
 }: RecipeCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -35,7 +37,7 @@ export function RecipeCard({
   };
 
   return (
-    <Card className={cn("overflow-hidden hover-scale card-shadow", className)}>
+    <Card className={cn("overflow-hidden hover-scale card-shadow", className)} style={style}>
       <div className="relative aspect-video overflow-hidden">
         <img 
           src={image} 
