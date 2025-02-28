@@ -1,9 +1,11 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { format, addDays, startOfWeek, addWeeks, subWeeks } from "date-fns";
+import { useOpenAI } from "@/hooks/use-openai";
+import { useToast } from "@/hooks/use-toast";
 
 interface MealSlot {
   id: string;
@@ -23,6 +25,10 @@ interface Day {
 
 export function MealPlanner() {
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const { generateMealPlanIdeas, isLoading } = useOpenAI();
+  const { toast } = useToast();
   
   const handlePrevWeek = () => {
     setCurrentWeek(prev => subWeeks(prev, 1));
@@ -30,6 +36,35 @@ export function MealPlanner() {
   
   const handleNextWeek = () => {
     setCurrentWeek(prev => addWeeks(prev, 1));
+  };
+
+  // Generate meal suggestions
+  const handleGetSuggestions = async () => {
+    setShowSuggestions(true);
+    try {
+      // Example user preferences - in a real app, these would come from user settings
+      const preferences = {
+        dietary: ["balanced", "high-protein"],
+        mealTypes: ["breakfast", "lunch", "dinner"],
+        cookingTime: 30
+      };
+      
+      const result = await generateMealPlanIdeas(preferences);
+      if (result && result.meals) {
+        setSuggestions(result.meals);
+        toast({
+          title: "Meal suggestions ready",
+          description: "Check out these personalized meal ideas for your plan",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to get meal suggestions:", error);
+      toast({
+        title: "Couldn't generate suggestions",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    }
   };
 
   // Generate 7 days starting from the current week
@@ -44,23 +79,23 @@ export function MealPlanner() {
           breakfast: {
             id: `breakfast-${i}`,
             title: "Avocado Toast with Eggs",
-            image: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+            image: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
             type: "breakfast"
           }
         }),
         ...(i % 2 === 0 && {
           lunch: {
             id: `lunch-${i}`,
-            title: "Quinoa Salad Bowl",
-            image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+            title: "Colorful Buddha Bowl",
+            image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
             type: "lunch"
           }
         }),
         ...(i % 2 === 1 && {
           dinner: {
             id: `dinner-${i}`,
-            title: "Grilled Salmon with Vegetables",
-            image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+            title: "Garlic Butter Shrimp Pasta",
+            image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
             type: "dinner"
           }
         })
@@ -87,6 +122,38 @@ export function MealPlanner() {
           </Button>
         </div>
       </div>
+      
+      <div className="flex justify-end">
+        <Button 
+          onClick={handleGetSuggestions}
+          variant="outline"
+          className="mb-4"
+          disabled={isLoading}
+        >
+          {isLoading ? "Getting ideas..." : "Get Meal Suggestions"}
+        </Button>
+      </div>
+
+      {showSuggestions && suggestions.length > 0 && (
+        <Card className="mb-6 animate-fade-in">
+          <CardHeader className="bg-primary/10 pb-2">
+            <h3 className="font-medium">Suggested Meals Based on Your Preferences</h3>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-2">
+              {suggestions.slice(0, 3).map((meal, idx) => (
+                <div key={idx} className="bg-card border rounded-md p-3 hover:shadow-md transition-shadow">
+                  <h4 className="font-medium">{meal.title}</h4>
+                  <p className="text-sm text-muted-foreground mt-1">{meal.type}</p>
+                  <div className="flex justify-end mt-2">
+                    <Button size="sm" variant="outline">Add to Plan</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
         {weekDays.map((day, index) => (

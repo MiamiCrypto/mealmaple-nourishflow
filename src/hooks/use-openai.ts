@@ -102,11 +102,19 @@ export function useOpenAI() {
     });
   };
 
+  const getSuggestedRecipes = async (preferences: any = {}, favoriteTags: string[] = []) => {
+    return callOpenAIFunction('getSuggestedRecipes', {
+      preferences,
+      favoriteTags
+    });
+  };
+
   return {
     personalizeRecipe,
     generateMealPlanIdeas,
     generateRecipeDescription,
     createRecipeFromIngredients,
+    getSuggestedRecipes,
     isLoading,
     error,
     tokenUsage,
