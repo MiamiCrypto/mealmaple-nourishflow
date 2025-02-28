@@ -21,6 +21,8 @@ export function useOpenAI() {
     setError(null);
 
     try {
+      console.log(`Calling OpenAI function: ${action}`, data);
+      
       const { data: functionData, error: functionError } = await supabase.functions.invoke(
         'openai',
         {
@@ -30,7 +32,13 @@ export function useOpenAI() {
 
       if (functionError) {
         console.error("Supabase function error:", functionError);
-        throw new Error(functionError.message || "Error calling AI service");
+        const errorMessage = functionError.message || "Error calling AI service";
+        throw new Error(errorMessage);
+      }
+
+      if (!functionData) {
+        console.error("No data returned from OpenAI function");
+        throw new Error("No data returned from AI service");
       }
 
       if (functionData.error) {
@@ -52,28 +60,29 @@ export function useOpenAI() {
         }
       }
 
+      console.log(`OpenAI function response for ${action}:`, functionData);
       return functionData;
     } catch (err: any) {
       console.error("OpenAI hook error:", err);
       
-      // Check for token limit exceeded error
-      if (err.message?.includes('token limit exceeded')) {
-        const errorMessage = 'You have reached your monthly token limit. Please try again next month.';
-        setError(errorMessage);
-        toast({
-          title: 'Token Limit Exceeded',
-          description: errorMessage,
-          variant: 'destructive',
-        });
-      } else {
-        const errorMessage = err.message || 'An error occurred with the AI service';
-        setError(errorMessage);
-        toast({
-          title: 'Error',
-          description: errorMessage,
-          variant: 'destructive',
-        });
+      // Format the error message for display
+      let errorMessage = err.message || 'An error occurred with the AI service';
+      
+      // Check for specific error types
+      if (errorMessage.includes('non-2xx status code')) {
+        errorMessage = 'The AI service is currently unavailable. This could be due to API limits or service disruption. Please try again later.';
+      } else if (errorMessage.includes('token limit exceeded')) {
+        errorMessage = 'You have reached your monthly token limit. Please try again next month.';
       }
+      
+      setError(errorMessage);
+      
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      
       return null;
     } finally {
       setIsLoading(false);

@@ -13,9 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { TokenUsageDisplay } from "@/components/token-usage-display";
+import { ErrorDisplay } from "@/components/error-display";
 
 export function RecipeGenerator() {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -53,8 +53,10 @@ export function RecipeGenerator() {
     }
 
     try {
+      console.log("Generating recipe with ingredients:", ingredients, "and preferences:", preferences);
       const result = await createRecipeFromIngredients(ingredients, preferences);
       if (result) {
+        console.log("Recipe generated successfully:", result);
         setGeneratedRecipe(result);
       }
     } catch (err) {
@@ -73,26 +75,7 @@ export function RecipeGenerator() {
           <ChefHat className="h-5 w-5 text-primary" />
           AI Recipe Generator
         </CardTitle>
-        {tokenUsage && (
-          <div className="mt-2">
-            <div className="flex justify-between text-sm mb-1">
-              <span>Token Usage</span>
-              <span className={tokenUsage.isApproachingLimit ? "text-amber-500 font-medium" : ""}>
-                {tokenUsage.used} / {tokenUsage.limit} ({tokenUsage.percentUsed}%)
-              </span>
-            </div>
-            <Progress 
-              value={tokenUsage.percentUsed} 
-              className={tokenUsage.isApproachingLimit ? "bg-amber-100" : ""}
-            />
-            {tokenUsage.isApproachingLimit && (
-              <div className="flex items-center gap-2 mt-2 text-sm text-amber-600">
-                <AlertCircle className="h-4 w-4" />
-                <span>You're approaching your monthly token limit</span>
-              </div>
-            )}
-          </div>
-        )}
+        {tokenUsage && <TokenUsageDisplay {...tokenUsage} />}
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -218,16 +201,7 @@ export function RecipeGenerator() {
           </div>
         )}
 
-        {error && (
-          <Alert variant="destructive" className="mt-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {error.includes("non-2xx status code") 
-                ? "There was a problem with the AI service. Please try again later." 
-                : error}
-            </AlertDescription>
-          </Alert>
-        )}
+        <ErrorDisplay error={error} />
 
         {generatedRecipe && (
           <div className="space-y-6 animate-fade-in">
