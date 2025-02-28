@@ -99,7 +99,7 @@ export function SpoonacularRecipeSearch() {
                 <SelectValue placeholder="Diet" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Diet</SelectItem>
+                <SelectItem value="none">Any Diet</SelectItem>
                 <SelectItem value="vegetarian">Vegetarian</SelectItem>
                 <SelectItem value="vegan">Vegan</SelectItem>
                 <SelectItem value="gluten-free">Gluten Free</SelectItem>
@@ -113,7 +113,7 @@ export function SpoonacularRecipeSearch() {
                 <SelectValue placeholder="Cuisine" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Cuisine</SelectItem>
+                <SelectItem value="none">Any Cuisine</SelectItem>
                 <SelectItem value="italian">Italian</SelectItem>
                 <SelectItem value="mexican">Mexican</SelectItem>
                 <SelectItem value="asian">Asian</SelectItem>
@@ -128,7 +128,7 @@ export function SpoonacularRecipeSearch() {
                 <SelectValue placeholder="Meal Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Type</SelectItem>
+                <SelectItem value="none">Any Type</SelectItem>
                 <SelectItem value="breakfast">Breakfast</SelectItem>
                 <SelectItem value="main course">Lunch/Dinner</SelectItem>
                 <SelectItem value="appetizer">Appetizer</SelectItem>
@@ -144,7 +144,7 @@ export function SpoonacularRecipeSearch() {
                 <SelectValue placeholder="Max Time" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Time</SelectItem>
+                <SelectItem value="none">Any Time</SelectItem>
                 <SelectItem value="15">15 minutes</SelectItem>
                 <SelectItem value="30">30 minutes</SelectItem>
                 <SelectItem value="45">45 minutes</SelectItem>
