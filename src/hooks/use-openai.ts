@@ -45,7 +45,7 @@ export function useOpenAI() {
           toast({
             title: 'API Usage Warning',
             description: `You've used ${functionData.tokenUsage.percentUsed}% of your monthly token limit.`,
-            variant: 'warning',
+            variant: 'destructive',
           });
         }
       }

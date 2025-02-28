@@ -560,6 +560,39 @@ export type Database = {
           },
         ]
       }
+      user_token_usage: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_reset: string
+          last_updated: string | null
+          month: number
+          tokens_used: number
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_reset: string
+          last_updated?: string | null
+          month: number
+          tokens_used?: number
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_reset?: string
+          last_updated?: string | null
+          month?: number
+          tokens_used?: number
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
