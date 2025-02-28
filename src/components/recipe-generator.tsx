@@ -158,7 +158,7 @@ export function RecipeGenerator() {
                       <SelectValue placeholder="Any preference" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No specific preference</SelectItem>
+                      <SelectItem value="none">No specific preference</SelectItem>
                       <SelectItem value="vegetarian">Vegetarian</SelectItem>
                       <SelectItem value="vegan">Vegan</SelectItem>
                       <SelectItem value="gluten-free">Gluten-Free</SelectItem>
