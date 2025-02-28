@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function RecipeGenerator() {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -51,9 +52,13 @@ export function RecipeGenerator() {
       return;
     }
 
-    const result = await createRecipeFromIngredients(ingredients, preferences);
-    if (result) {
-      setGeneratedRecipe(result);
+    try {
+      const result = await createRecipeFromIngredients(ingredients, preferences);
+      if (result) {
+        setGeneratedRecipe(result);
+      }
+    } catch (err) {
+      console.error("Failed to generate recipe:", err);
     }
   };
 
@@ -151,8 +156,8 @@ export function RecipeGenerator() {
                 <div>
                   <Label className="text-sm font-medium mb-1 block">Dietary Preference</Label>
                   <Select 
-                    value={preferences.dietaryPreferences[0] || ""} 
-                    onValueChange={(value) => setPreferences({...preferences, dietaryPreferences: value ? [value] : []})}
+                    value={preferences.dietaryPreferences[0] || "none"} 
+                    onValueChange={(value) => setPreferences({...preferences, dietaryPreferences: value !== "none" ? [value] : []})}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Any preference" />
@@ -214,9 +219,14 @@ export function RecipeGenerator() {
         )}
 
         {error && (
-          <div className="bg-destructive/10 p-4 rounded-md text-destructive">
-            <p>Error: {error}</p>
-          </div>
+          <Alert variant="destructive" className="mt-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {error.includes("non-2xx status code") 
+                ? "There was a problem with the AI service. Please try again later." 
+                : error}
+            </AlertDescription>
+          </Alert>
         )}
 
         {generatedRecipe && (

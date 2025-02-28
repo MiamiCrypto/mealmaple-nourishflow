@@ -29,10 +29,12 @@ export function useOpenAI() {
       );
 
       if (functionError) {
-        throw new Error(functionError.message);
+        console.error("Supabase function error:", functionError);
+        throw new Error(functionError.message || "Error calling AI service");
       }
 
       if (functionData.error) {
+        console.error("OpenAI function error:", functionData.error);
         throw new Error(functionData.error);
       }
 
@@ -52,6 +54,8 @@ export function useOpenAI() {
 
       return functionData;
     } catch (err: any) {
+      console.error("OpenAI hook error:", err);
+      
       // Check for token limit exceeded error
       if (err.message?.includes('token limit exceeded')) {
         const errorMessage = 'You have reached your monthly token limit. Please try again next month.';
