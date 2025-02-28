@@ -17,6 +17,22 @@ import { Label } from "@/components/ui/label";
 import { TokenUsageDisplay } from "@/components/token-usage-display";
 import { ErrorDisplay } from "@/components/error-display";
 
+// Define proper types for the recipe data
+interface RecipeIngredient {
+  ingredient: string;
+  quantity: string;
+}
+
+interface GeneratedRecipe {
+  title: string;
+  description: string;
+  ingredients: RecipeIngredient[] | string[];
+  instructions: string[];
+  prepTime: string;
+  cookTime: string;
+  nutritionalNotes?: string;
+}
+
 export function RecipeGenerator() {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -25,7 +41,7 @@ export function RecipeGenerator() {
     mealType: "dinner",
     cookingTime: 30
   });
-  const [generatedRecipe, setGeneratedRecipe] = useState<any>(null);
+  const [generatedRecipe, setGeneratedRecipe] = useState<GeneratedRecipe | null>(null);
   const { createRecipeFromIngredients, isLoading, error, tokenUsage } = useOpenAI();
 
   const handleAddIngredient = () => {
@@ -66,6 +82,25 @@ export function RecipeGenerator() {
 
   const handleReset = () => {
     setGeneratedRecipe(null);
+  };
+
+  // Helper function to render ingredients correctly based on their data structure
+  const renderIngredient = (ingredient: string | RecipeIngredient, index: number) => {
+    if (typeof ingredient === 'string') {
+      return (
+        <li key={index} className="flex items-start gap-2">
+          <span className="text-primary font-medium">•</span>
+          <span>{ingredient}</span>
+        </li>
+      );
+    } else {
+      return (
+        <li key={index} className="flex items-start gap-2">
+          <span className="text-primary font-medium">•</span>
+          <span>{ingredient.quantity} {ingredient.ingredient}</span>
+        </li>
+      );
+    }
   };
 
   return (
@@ -214,12 +249,9 @@ export function RecipeGenerator() {
               <div>
                 <h3 className="text-lg font-medium mb-3">Ingredients</h3>
                 <ul className="space-y-2">
-                  {generatedRecipe.ingredients?.map((ingredient: string, index: number) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-primary font-medium">•</span>
-                      <span>{ingredient}</span>
-                    </li>
-                  ))}
+                  {Array.isArray(generatedRecipe.ingredients) && generatedRecipe.ingredients.map((ingredient, index) => 
+                    renderIngredient(ingredient, index)
+                  )}
                 </ul>
               </div>
 
@@ -241,11 +273,11 @@ export function RecipeGenerator() {
             <div className="flex flex-wrap gap-4 mt-4">
               <div>
                 <span className="text-sm font-medium">Prep Time:</span>
-                <span className="ml-2">{generatedRecipe.prepTime} mins</span>
+                <span className="ml-2">{generatedRecipe.prepTime}</span>
               </div>
               <div>
                 <span className="text-sm font-medium">Cook Time:</span>
-                <span className="ml-2">{generatedRecipe.cookTime} mins</span>
+                <span className="ml-2">{generatedRecipe.cookTime}</span>
               </div>
               {generatedRecipe.nutritionalNotes && (
                 <div className="w-full mt-2">
