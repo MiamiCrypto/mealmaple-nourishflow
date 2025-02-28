@@ -13,7 +13,8 @@ import {
   Tag,
   ChevronDown,
   Database,
-  Globe
+  Globe,
+  Sparkles
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { SpoonacularRecipeSearch } from "@/components/spoonacular-recipe-search";
+import { RecipeGenerator } from "@/components/recipe-generator";
 import {
   Tabs,
   TabsContent,
@@ -232,7 +234,7 @@ const Recipes = () => {
           </div>
           
           <Tabs defaultValue="local" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsList className="grid w-full grid-cols-3 mb-6">
               <TabsTrigger value="local" className="flex items-center gap-2">
                 <Database className="h-4 w-4" />
                 Local Recipes
@@ -240,6 +242,10 @@ const Recipes = () => {
               <TabsTrigger value="spoonacular" className="flex items-center gap-2">
                 <Globe className="h-4 w-4" />
                 Search Online
+              </TabsTrigger>
+              <TabsTrigger value="ai-generator" className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                AI Recipe Creator
               </TabsTrigger>
             </TabsList>
             
@@ -444,6 +450,10 @@ const Recipes = () => {
             
             <TabsContent value="spoonacular">
               <SpoonacularRecipeSearch />
+            </TabsContent>
+            
+            <TabsContent value="ai-generator">
+              <RecipeGenerator />
             </TabsContent>
           </Tabs>
         </div>
