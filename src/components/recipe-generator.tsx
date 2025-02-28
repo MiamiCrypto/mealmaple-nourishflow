@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { Label } from "@/components/ui/label";
 
 export function RecipeGenerator() {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -129,7 +130,7 @@ export function RecipeGenerator() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Meal Type</label>
+                  <Label className="text-sm font-medium mb-1 block">Meal Type</Label>
                   <Select 
                     value={preferences.mealType} 
                     onValueChange={(value) => setPreferences({...preferences, mealType: value})}
@@ -148,7 +149,7 @@ export function RecipeGenerator() {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Dietary Preference</label>
+                  <Label className="text-sm font-medium mb-1 block">Dietary Preference</Label>
                   <Select 
                     value={preferences.dietaryPreferences[0] || ""} 
                     onValueChange={(value) => setPreferences({...preferences, dietaryPreferences: value ? [value] : []})}
@@ -168,7 +169,7 @@ export function RecipeGenerator() {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Max Cooking Time</label>
+                  <Label className="text-sm font-medium mb-1 block">Max Cooking Time</Label>
                   <Select 
                     value={preferences.cookingTime.toString()} 
                     onValueChange={(value) => setPreferences({...preferences, cookingTime: parseInt(value)})}
