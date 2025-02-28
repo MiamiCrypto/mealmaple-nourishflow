@@ -46,6 +46,7 @@ export function RecipeGenerator() {
   const [generatedRecipe, setGeneratedRecipe] = useState<GeneratedRecipe | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const { createRecipeFromIngredients, isLoading, error, tokenUsage } = useOpenAI();
   const { toast } = useToast();
 
@@ -84,6 +85,7 @@ export function RecipeGenerator() {
         console.log("Recipe generated successfully:", result);
         setGeneratedRecipe(result);
         setIsSaved(false); // Reset saved state for new recipe
+        setSaveError(null); // Clear any previous save errors
       }
     } catch (err) {
       console.error("Failed to generate recipe:", err);
@@ -93,12 +95,14 @@ export function RecipeGenerator() {
   const handleReset = () => {
     setGeneratedRecipe(null);
     setIsSaved(false);
+    setSaveError(null);
   };
 
   const handleSaveRecipe = async () => {
     if (!generatedRecipe) return;
     
     setIsSaving(true);
+    setSaveError(null);
     
     try {
       // Extract prep and cook times as numbers (minutes)
@@ -129,6 +133,12 @@ export function RecipeGenerator() {
         }))
       );
       
+      // Convert preference meal type to a valid database enum value
+      // Valid values for meal_type in the database are: "breakfast" | "lunch" | "dinner" | "snack"
+      const validMealType = preferences.mealType === 'dessert' ? 'snack' : preferences.mealType;
+      
+      console.log("Saving recipe with meal type:", validMealType);
+      
       // Save recipe to database
       const { data, error: saveError } = await supabase
         .from('recipes')
@@ -139,7 +149,7 @@ export function RecipeGenerator() {
           cook_time: cookTimeMinutes,
           total_time: prepTimeMinutes + cookTimeMinutes,
           servings: 4, // Default value
-          meal_type: preferences.mealType,
+          meal_type: validMealType, 
           difficulty: "medium", // Default value
           instructions: instructionsJson,
           source: "AI",
@@ -151,6 +161,7 @@ export function RecipeGenerator() {
       
       if (saveError) {
         console.error("Error saving recipe:", saveError);
+        setSaveError(saveError.message);
         toast({
           title: "Failed to save recipe",
           description: saveError.message,
@@ -166,6 +177,8 @@ export function RecipeGenerator() {
       }
     } catch (err) {
       console.error("Error in save process:", err);
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      setSaveError(errorMessage);
       toast({
         title: "Something went wrong",
         description: "Failed to save the recipe. Please try again.",
@@ -257,8 +270,8 @@ export function RecipeGenerator() {
                       <SelectItem value="breakfast">Breakfast</SelectItem>
                       <SelectItem value="lunch">Lunch</SelectItem>
                       <SelectItem value="dinner">Dinner</SelectItem>
-                      <SelectItem value="dessert">Dessert</SelectItem>
                       <SelectItem value="snack">Snack</SelectItem>
+                      <SelectItem value="dessert">Dessert</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -378,6 +391,19 @@ export function RecipeGenerator() {
                 </div>
               )}
             </div>
+
+            {/* Save error message */}
+            {saveError && (
+              <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-md text-sm">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Failed to save recipe</p>
+                    <p>{saveError}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="flex gap-2">
               <Button onClick={handleReset} variant="outline">
