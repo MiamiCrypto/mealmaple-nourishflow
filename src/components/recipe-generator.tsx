@@ -18,6 +18,7 @@ import { TokenUsageDisplay } from "@/components/token-usage-display";
 import { ErrorDisplay } from "@/components/error-display";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 // Define proper types for the recipe data
 interface RecipeIngredient {
@@ -34,6 +35,9 @@ interface GeneratedRecipe {
   cookTime: string;
   nutritionalNotes?: string;
 }
+
+// Define a type for the meal type based on Supabase's enum
+type MealType = Database["public"]["Enums"]["meal_type"];
 
 export function RecipeGenerator() {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -135,7 +139,16 @@ export function RecipeGenerator() {
       
       // Convert preference meal type to a valid database enum value
       // Valid values for meal_type in the database are: "breakfast" | "lunch" | "dinner" | "snack"
-      const validMealType = preferences.mealType === 'dessert' ? 'snack' : preferences.mealType;
+      let validMealType: MealType = 'dinner';
+      
+      if (preferences.mealType === 'breakfast' || 
+          preferences.mealType === 'lunch' || 
+          preferences.mealType === 'dinner' || 
+          preferences.mealType === 'snack') {
+        validMealType = preferences.mealType as MealType;
+      } else if (preferences.mealType === 'dessert') {
+        validMealType = 'snack'; // Map dessert to snack
+      }
       
       console.log("Saving recipe with meal type:", validMealType);
       
@@ -149,7 +162,7 @@ export function RecipeGenerator() {
           cook_time: cookTimeMinutes,
           total_time: prepTimeMinutes + cookTimeMinutes,
           servings: 4, // Default value
-          meal_type: validMealType, 
+          meal_type: validMealType,
           difficulty: "medium", // Default value
           instructions: instructionsJson,
           source: "AI",
