@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, ChefHat, Trash2 } from "lucide-react";
+import { Loader2, Plus, ChefHat, Trash2, AlertCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 
 export function RecipeGenerator() {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -23,7 +24,7 @@ export function RecipeGenerator() {
     cookingTime: 30
   });
   const [generatedRecipe, setGeneratedRecipe] = useState<any>(null);
-  const { createRecipeFromIngredients, isLoading, error } = useOpenAI();
+  const { createRecipeFromIngredients, isLoading, error, tokenUsage } = useOpenAI();
 
   const handleAddIngredient = () => {
     if (inputValue.trim() && !ingredients.includes(inputValue.trim())) {
@@ -66,6 +67,26 @@ export function RecipeGenerator() {
           <ChefHat className="h-5 w-5 text-primary" />
           AI Recipe Generator
         </CardTitle>
+        {tokenUsage && (
+          <div className="mt-2">
+            <div className="flex justify-between text-sm mb-1">
+              <span>Token Usage</span>
+              <span className={tokenUsage.isApproachingLimit ? "text-amber-500 font-medium" : ""}>
+                {tokenUsage.used} / {tokenUsage.limit} ({tokenUsage.percentUsed}%)
+              </span>
+            </div>
+            <Progress 
+              value={tokenUsage.percentUsed} 
+              className={tokenUsage.isApproachingLimit ? "bg-amber-100" : ""}
+            />
+            {tokenUsage.isApproachingLimit && (
+              <div className="flex items-center gap-2 mt-2 text-sm text-amber-600">
+                <AlertCircle className="h-4 w-4" />
+                <span>You're approaching your monthly token limit</span>
+              </div>
+            )}
+          </div>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-6">

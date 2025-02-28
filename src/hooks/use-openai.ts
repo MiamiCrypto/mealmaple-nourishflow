@@ -3,9 +3,17 @@ import { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+interface TokenUsage {
+  used: number;
+  limit: number;
+  isApproachingLimit: boolean;
+  percentUsed: number;
+}
+
 export function useOpenAI() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tokenUsage, setTokenUsage] = useState<TokenUsage | null>(null);
   const { toast } = useToast();
 
   const callOpenAIFunction = async (action: string, data: any) => {
@@ -28,15 +36,40 @@ export function useOpenAI() {
         throw new Error(functionData.error);
       }
 
+      // Handle token usage information
+      if (functionData.tokenUsage) {
+        setTokenUsage(functionData.tokenUsage);
+        
+        // Show warning if approaching limit
+        if (functionData.tokenUsage.isApproachingLimit) {
+          toast({
+            title: 'API Usage Warning',
+            description: `You've used ${functionData.tokenUsage.percentUsed}% of your monthly token limit.`,
+            variant: 'warning',
+          });
+        }
+      }
+
       return functionData;
     } catch (err: any) {
-      const errorMessage = err.message || 'An error occurred with the AI service';
-      setError(errorMessage);
-      toast({
-        title: 'Error',
-        description: errorMessage,
-        variant: 'destructive',
-      });
+      // Check for token limit exceeded error
+      if (err.message?.includes('token limit exceeded')) {
+        const errorMessage = 'You have reached your monthly token limit. Please try again next month.';
+        setError(errorMessage);
+        toast({
+          title: 'Token Limit Exceeded',
+          description: errorMessage,
+          variant: 'destructive',
+        });
+      } else {
+        const errorMessage = err.message || 'An error occurred with the AI service';
+        setError(errorMessage);
+        toast({
+          title: 'Error',
+          description: errorMessage,
+          variant: 'destructive',
+        });
+      }
       return null;
     } finally {
       setIsLoading(false);
@@ -76,5 +109,6 @@ export function useOpenAI() {
     createRecipeFromIngredients,
     isLoading,
     error,
+    tokenUsage,
   };
 }

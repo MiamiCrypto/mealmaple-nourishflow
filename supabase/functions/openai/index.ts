@@ -1,13 +1,25 @@
 
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.43.0";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY') || '';
+
+// Configuration - making it easy to adjust
+const CONFIG = {
+  MODEL: "gpt-4o-mini-2024-07-18", // Specific model version
+  MONTHLY_TOKEN_LIMIT: 30000,       // Monthly token limit per user
+  WARNING_THRESHOLD: 0.8,           // Notify users at 80% of limit
+};
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Initialize Supabase client
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -16,179 +28,293 @@ serve(async (req) => {
   }
 
   try {
-    const { action, data } = await req.json();
-    let response;
-
-    switch (action) {
-      case 'personalizeRecipe':
-        response = await personalizeRecipe(data);
-        break;
-      case 'generateMealPlanIdeas':
-        response = await generateMealPlanIdeas(data);
-        break;
-      case 'generateRecipeDescription':
-        response = await generateRecipeDescription(data);
-        break;
-      case 'createRecipeFromIngredients':
-        response = await createRecipeFromIngredients(data);
-        break;
-      default:
-        throw new Error(`Unsupported action: ${action}`);
+    // Extract the authorization token from the request
+    const authHeader = req.headers.get('Authorization') || '';
+    const token = authHeader.replace('Bearer ', '');
+    
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: 'No authorization token provided' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    return new Response(JSON.stringify(response), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // Get user information from the token
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid authorization token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check if the user has exceeded their monthly token limit
+    const { data: usageData, error: usageError } = await supabase
+      .from('user_token_usage')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (usageError && usageError.code !== 'PGRST116') { // PGRST116 is "no rows returned" error
+      console.error('Error fetching token usage:', usageError);
+    }
+
+    // Get the current month and year
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    // Initialize or reset token count if it's a new month
+    let tokenUsage = usageData || {
+      user_id: user.id,
+      tokens_used: 0,
+      last_reset: now.toISOString(),
+      month: currentMonth,
+      year: currentYear
+    };
+
+    // Reset counter if it's a new month
+    if (tokenUsage.month !== currentMonth || tokenUsage.year !== currentYear) {
+      tokenUsage = {
+        ...tokenUsage,
+        tokens_used: 0,
+        last_reset: now.toISOString(),
+        month: currentMonth,
+        year: currentYear
+      };
+    }
+
+    // Check if the user has exceeded their token limit
+    if (tokenUsage.tokens_used >= CONFIG.MONTHLY_TOKEN_LIMIT) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Monthly token limit exceeded', 
+          tokenUsage: tokenUsage.tokens_used,
+          limit: CONFIG.MONTHLY_TOKEN_LIMIT
+        }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse the request body
+    const { action, data } = await req.json();
+    
+    // Handle different actions
+    let result;
+    let tokenCount = 0;
+    
+    if (action === 'personalizeRecipe') {
+      result = await personalizeRecipe(data);
+      tokenCount = result.usage.total_tokens;
+    } else if (action === 'generateMealPlanIdeas') {
+      result = await generateMealPlanIdeas(data);
+      tokenCount = result.usage.total_tokens;
+    } else if (action === 'generateRecipeDescription') {
+      result = await generateRecipeDescription(data);
+      tokenCount = result.usage.total_tokens;
+    } else if (action === 'createRecipeFromIngredients') {
+      result = await createRecipeFromIngredients(data);
+      tokenCount = result.usage.total_tokens;
+    } else {
+      return new Response(
+        JSON.stringify({ error: 'Invalid action' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Update token usage
+    const newTokenUsage = tokenUsage.tokens_used + tokenCount;
+    
+    // Upsert the token usage
+    const { error: updateError } = await supabase
+      .from('user_token_usage')
+      .upsert({
+        user_id: user.id,
+        tokens_used: newTokenUsage,
+        last_reset: tokenUsage.last_reset,
+        month: tokenUsage.month,
+        year: tokenUsage.year,
+        last_updated: now.toISOString()
+      });
+
+    if (updateError) {
+      console.error('Error updating token usage:', updateError);
+    }
+
+    // Add token usage warning if approaching limit
+    const isApproachingLimit = newTokenUsage >= CONFIG.MONTHLY_TOKEN_LIMIT * CONFIG.WARNING_THRESHOLD;
+    const responseData = {
+      ...result.data,
+      tokenUsage: {
+        used: newTokenUsage,
+        limit: CONFIG.MONTHLY_TOKEN_LIMIT,
+        isApproachingLimit,
+        percentUsed: Math.round((newTokenUsage / CONFIG.MONTHLY_TOKEN_LIMIT) * 100)
+      }
+    };
+
+    // Log the request for auditing
+    console.log({
+      timestamp: now.toISOString(),
+      user_id: user.id,
+      action,
+      model: CONFIG.MODEL,
+      tokens_used: tokenCount,
+      total_usage: newTokenUsage
     });
+
+    return new Response(
+      JSON.stringify(responseData),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
     console.error('Error in OpenAI function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 });
 
-async function personalizeRecipe(data: {
-  recipe: any;
-  dietaryPreferences?: string[];
-  healthConditions?: string[];
-  skillLevel?: string;
-}) {
-  const { recipe, dietaryPreferences = [], healthConditions = [], skillLevel = 'intermediate' } = data;
-  
-  const ingredients = recipe.extendedIngredients?.map((ing: any) => ing.original).join('\n') || 
-    'Ingredients not provided';
-  
-  const instructions = recipe.analyzedInstructions?.[0]?.steps?.map((step: any) => step.step).join('\n') || 
-    'Instructions not provided';
-  
-  const prompt = `
-    Recipe to personalize: ${recipe.title}
-    
-    Original Ingredients:
-    ${ingredients}
-    
-    Original Instructions:
-    ${instructions}
-    
-    User Dietary Preferences: ${dietaryPreferences.join(', ') || 'None specified'}
-    Health Conditions to Consider: ${healthConditions.join(', ') || 'None specified'}
-    Cooking Skill Level: ${skillLevel}
-    
-    Please provide:
-    1. Adjusted ingredients with appropriate substitutions for dietary needs or health conditions
-    2. Modified cooking instructions appropriate for the skill level
-    3. A brief explanation of why these adjustments improve the recipe for the specified preferences
-    4. Estimated nutritional impact of these changes (if applicable)
-    
-    Format as JSON with keys: adjustedIngredients (array), adjustedInstructions (array), explanation (string), and nutritionalNotes (string).
-  `;
+// OpenAI API Functions
+async function personalizeRecipe(data) {
+  const messages = [
+    {
+      role: "system",
+      content: "You are a culinary AI assistant that specializes in personalizing recipes based on user preferences, dietary restrictions, and health conditions. Return the recipe in a structured JSON format."
+    },
+    {
+      role: "user",
+      content: `Please personalize this recipe according to the following preferences:
+Recipe: ${JSON.stringify(data.recipe)}
+${data.dietaryPreferences ? `Dietary Preferences: ${data.dietaryPreferences.join(', ')}` : ''}
+${data.healthConditions ? `Health Conditions: ${data.healthConditions.join(', ')}` : ''}
+${data.allergies ? `Allergies: ${data.allergies.join(', ')}` : ''}
+${data.servingSize ? `Adjust serving size to: ${data.servingSize} portions` : ''}
+${data.skillLevel ? `Cooking Skill Level: ${data.skillLevel}` : ''}
 
-  return await callOpenAI(prompt, 'Personalize this recipe with specific dietary adjustments.');
+Return a JSON object with the following structure:
+{
+  "title": "Personalized recipe title",
+  "description": "Brief description of the personalized recipe",
+  "ingredients": ["list", "of", "ingredients", "with", "measurements"],
+  "instructions": ["step 1", "step 2", "etc"],
+  "prepTime": number in minutes,
+  "cookTime": number in minutes,
+  "totalTime": number in minutes,
+  "servings": number of servings,
+  "nutritionalNotes": "Brief nutritional notes if applicable",
+  "adaptations": "Brief explanation of the changes made to personalize the recipe"
+}`
+    }
+  ];
+
+  return await callOpenAI(messages);
 }
 
-async function generateMealPlanIdeas(data: {
-  preferences: any;
-  existingMeals: any[];
-  duration: number;
-}) {
-  const { preferences, existingMeals = [], duration = 7 } = data;
-  
-  const dietaryPrefs = preferences.dietaryPreferences?.join(', ') || 'None specified';
-  const healthConditions = preferences.healthConditions?.join(', ') || 'None specified';
-  const nutritionGoals = JSON.stringify(preferences.nutritionGoals || {});
-  
-  const existingMealsText = existingMeals.length > 0 
-    ? existingMeals.map(m => `${m.mealType}: ${m.title}`).join('\n')
-    : 'No meals currently in plan';
-  
-  const prompt = `
-    Generate a ${duration}-day meal plan with these parameters:
-    
-    Dietary Preferences: ${dietaryPrefs}
-    Health Conditions: ${healthConditions}
-    Nutritional Goals: ${nutritionGoals}
-    
-    Existing meals in the plan:
-    ${existingMealsText}
-    
-    Please provide meal suggestions that complement the existing meals and meet the dietary requirements.
-    Focus on balanced nutrition across the week.
-    
-    Format as JSON with an array of meal suggestions, each with: title, mealType (breakfast, lunch, dinner, or snack), 
-    estimatedPrepTime, keyIngredients (array), and nutritionalHighlights (brief string).
-  `;
+async function generateMealPlanIdeas(data) {
+  const messages = [
+    {
+      role: "system",
+      content: "You are a meal planning assistant that helps users create balanced, nutritious meal plans based on their preferences. Return the meal plan in a structured JSON format."
+    },
+    {
+      role: "user",
+      content: `Please generate meal plan ideas for ${data.duration} days based on the following preferences:
+${data.preferences.dietaryPreferences ? `Dietary Preferences: ${data.preferences.dietaryPreferences.join(', ')}` : ''}
+${data.preferences.healthConditions ? `Health Conditions: ${data.preferences.healthConditions.join(', ')}` : ''}
+${data.preferences.allergies ? `Allergies: ${data.preferences.allergies.join(', ')}` : ''}
+${data.preferences.mealTypes ? `Preferred Meal Types: ${data.preferences.mealTypes.join(', ')}` : ''}
+${data.preferences.cookingTime ? `Maximum Cooking Time: ${data.preferences.cookingTime} minutes` : ''}
 
-  return await callOpenAI(prompt, 'Create a personalized meal plan with specific dietary requirements.');
+${data.existingMeals && data.existingMeals.length > 0 ? `Existing Meals in Plan: ${JSON.stringify(data.existingMeals)}` : ''}
+
+Return a JSON object with the following structure:
+{
+  "mealPlan": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "mealType": "breakfast/lunch/dinner/snack",
+          "title": "Recipe title",
+          "description": "Brief description",
+          "prepTime": number in minutes,
+          "estimatedNutrition": {
+            "calories": approximate calories,
+            "protein": approximate protein in grams,
+            "carbs": approximate carbs in grams,
+            "fat": approximate fat in grams
+          }
+        }
+      ]
+    }
+  ],
+  "nutritionalSummary": "Brief summary of nutritional balance of the meal plan",
+  "tips": "Optional tips for meal prep or variations"
+}`
+    }
+  ];
+
+  return await callOpenAI(messages);
 }
 
-async function generateRecipeDescription(data: {
-  recipe: any;
-}) {
-  const { recipe } = data;
-  
-  const ingredients = recipe.extendedIngredients?.map((ing: any) => ing.original).join(', ') || 
-    'Ingredients not provided';
-  
-  const prompt = `
-    Generate an engaging and informative description for this recipe:
-    
-    Recipe Name: ${recipe.title}
-    Main Ingredients: ${ingredients}
-    Cuisine Type: ${recipe.cuisines?.join(', ') || 'Not specified'}
-    Dish Type: ${recipe.dishTypes?.join(', ') || 'Not specified'}
-    Preparation Time: ${recipe.readyInMinutes || 'Not specified'} minutes
-    
-    Create a compelling 2-3 sentence description highlighting the key flavors, techniques, 
-    or cultural background of this dish. Make it appealing to home cooks.
-  `;
+async function generateRecipeDescription(data) {
+  const messages = [
+    {
+      role: "system",
+      content: "You are a culinary content writer who specializes in creating appetizing, engaging recipe descriptions. Your descriptions should highlight flavors, textures, and appeal of the dish."
+    },
+    {
+      role: "user",
+      content: `Write an engaging description for this recipe:
+Recipe: ${JSON.stringify(data.recipe)}
 
-  return await callOpenAI(prompt, 'Create an engaging recipe description.');
+Return a JSON object with the following structure:
+{
+  "description": "The engaging recipe description (about 2-3 sentences)",
+  "shortDescription": "A very brief 1-sentence description",
+  "tags": ["list", "of", "relevant", "tags", "for", "this", "recipe"]
+}`
+    }
+  ];
+
+  return await callOpenAI(messages);
 }
 
-async function createRecipeFromIngredients(data: {
-  ingredients: string[];
-  preferences?: {
-    dietaryPreferences?: string[];
-    mealType?: string;
-    cookingTime?: number;
-  };
-}) {
-  const { ingredients, preferences = {} } = data;
-  
-  const dietaryPrefs = preferences.dietaryPreferences?.join(', ') || 'None specified';
-  const mealType = preferences.mealType || 'Not specified';
-  const cookingTime = preferences.cookingTime ? `${preferences.cookingTime} minutes or less` : 'Not specified';
-  
-  const prompt = `
-    Create a recipe using these available ingredients:
-    ${ingredients.join(', ')}
-    
-    Additional parameters:
-    Dietary Preferences: ${dietaryPrefs}
-    Meal Type: ${mealType}
-    Maximum Cooking Time: ${cookingTime}
-    
-    Please create a complete recipe including:
-    1. An appealing title
-    2. A brief description of the dish
-    3. A list of ingredients with measurements
-    4. Step-by-step cooking instructions
-    5. Estimated preparation and cooking time
-    6. Any nutritional highlights or serving suggestions
-    
-    Format as JSON with keys: title, description, ingredients (array of strings with measurements), 
-    instructions (array of steps), prepTime, cookTime, and nutritionalNotes.
-  `;
+async function createRecipeFromIngredients(data) {
+  const messages = [
+    {
+      role: "system",
+      content: "You are a creative chef who can generate recipes based on available ingredients. Create a complete, practical recipe that uses the provided ingredients and matches the user's preferences."
+    },
+    {
+      role: "user",
+      content: `Create a ${data.preferences?.mealType || 'meal'} recipe using these ingredients: ${data.ingredients.join(', ')}
 
-  return await callOpenAI(prompt, 'Create a recipe from these ingredients.');
+Additional preferences:
+${data.preferences?.dietaryPreferences ? `Dietary Preferences: ${data.preferences.dietaryPreferences.join(', ')}` : ''}
+${data.preferences?.cookingTime ? `Maximum Cooking Time: ${data.preferences.cookingTime} minutes` : ''}
+
+Return a JSON object with the following structure:
+{
+  "title": "Recipe title",
+  "description": "Brief description of the recipe",
+  "ingredients": ["list", "of", "ingredients", "with", "measurements"],
+  "instructions": ["step 1", "step 2", "etc"],
+  "prepTime": number in minutes,
+  "cookTime": number in minutes,
+  "servings": number of servings,
+  "nutritionalNotes": "Brief nutritional notes if applicable"
+}`
+    }
+  ];
+
+  return await callOpenAI(messages);
 }
 
-async function callOpenAI(prompt: string, systemMessage: string = 'You are a helpful culinary assistant.') {
-  if (!openAIApiKey) {
-    throw new Error('OpenAI API key is not configured');
-  }
-
+async function callOpenAI(messages) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -196,42 +322,52 @@ async function callOpenAI(prompt: string, systemMessage: string = 'You are a hel
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: systemMessage },
-        { role: 'user', content: prompt }
-      ],
+      model: CONFIG.MODEL,
+      messages: messages,
       temperature: 0.7,
     }),
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(`OpenAI API error: ${JSON.stringify(errorData)}`);
+    console.error('OpenAI API error:', errorData);
+    throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
   }
 
-  const data = await response.json();
+  const responseData = await response.json();
   
+  // Verify the model used
+  if (responseData.model !== CONFIG.MODEL) {
+    console.warn(`Warning: Model mismatch. Requested ${CONFIG.MODEL} but got ${responseData.model}`);
+  }
+
   try {
-    // Try to parse as JSON first
-    const content = data.choices[0].message.content;
-    const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/{[\s\S]*}/);
+    const content = responseData.choices[0].message.content;
+    let parsedContent;
     
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0].replace(/```json\n|```/g, ''));
+    // Try to parse the content as JSON
+    try {
+      parsedContent = JSON.parse(content);
+    } catch (error) {
+      // If parsing fails, look for a JSON object within the text
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          parsedContent = JSON.parse(jsonMatch[0]);
+        } catch (nestedError) {
+          throw new Error('Could not parse response as JSON');
+        }
+      } else {
+        throw new Error('Response does not contain valid JSON');
+      }
     }
-    
-    // If not valid JSON or no JSON found, return the raw content
-    return { 
-      rawContent: content,
-      // Also try to extract a helpful result even if not proper JSON
-      message: "Received non-JSON response from OpenAI. See rawContent for details."
+
+    return {
+      data: parsedContent,
+      usage: responseData.usage
     };
-  } catch (e) {
-    console.error("Error parsing OpenAI response:", e);
-    return { 
-      rawContent: data.choices[0].message.content,
-      error: "Failed to parse response as JSON" 
-    };
+  } catch (error) {
+    console.error('Error parsing OpenAI response:', error);
+    throw new Error('Failed to parse OpenAI response');
   }
 }
