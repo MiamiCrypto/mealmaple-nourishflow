@@ -46,8 +46,8 @@ export function RecipeGenerator() {
   };
 
   const handleGenerateRecipe = async () => {
-    if (ingredients.length < 3) {
-      alert("Please add at least 3 ingredients");
+    if (ingredients.length < 1) {
+      alert("Please add at least 1 ingredient");
       return;
     }
 
@@ -192,7 +192,7 @@ export function RecipeGenerator() {
             <Button
               onClick={handleGenerateRecipe}
               className="w-full mt-6"
-              disabled={ingredients.length < 3 || isLoading}
+              disabled={ingredients.length < 1 || isLoading}
             >
               {isLoading ? (
                 <>
