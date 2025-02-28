@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, ChefHat, Trash2, AlertCircle } from "lucide-react";
+import { Loader2, Plus, ChefHat, Trash2, AlertCircle, Save, Check } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { TokenUsageDisplay } from "@/components/token-usage-display";
 import { ErrorDisplay } from "@/components/error-display";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 // Define proper types for the recipe data
 interface RecipeIngredient {
@@ -42,7 +44,10 @@ export function RecipeGenerator() {
     cookingTime: 30
   });
   const [generatedRecipe, setGeneratedRecipe] = useState<GeneratedRecipe | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const { createRecipeFromIngredients, isLoading, error, tokenUsage } = useOpenAI();
+  const { toast } = useToast();
 
   const handleAddIngredient = () => {
     if (inputValue.trim() && !ingredients.includes(inputValue.trim())) {
@@ -64,7 +69,11 @@ export function RecipeGenerator() {
 
   const handleGenerateRecipe = async () => {
     if (ingredients.length < 1) {
-      alert("Please add at least 1 ingredient");
+      toast({
+        title: "Please add ingredients",
+        description: "You need to add at least 1 ingredient to generate a recipe",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -74,6 +83,7 @@ export function RecipeGenerator() {
       if (result) {
         console.log("Recipe generated successfully:", result);
         setGeneratedRecipe(result);
+        setIsSaved(false); // Reset saved state for new recipe
       }
     } catch (err) {
       console.error("Failed to generate recipe:", err);
@@ -82,6 +92,88 @@ export function RecipeGenerator() {
 
   const handleReset = () => {
     setGeneratedRecipe(null);
+    setIsSaved(false);
+  };
+
+  const handleSaveRecipe = async () => {
+    if (!generatedRecipe) return;
+    
+    setIsSaving(true);
+    
+    try {
+      // Extract prep and cook times as numbers (minutes)
+      const prepTimeMinutes = parseInt(generatedRecipe.prepTime.replace(/\D/g, '')) || 10;
+      const cookTimeMinutes = parseInt(generatedRecipe.cookTime.replace(/\D/g, '')) || 20;
+      
+      // Prepare dietary tags from preferences
+      const dietaryTags = preferences.dietaryPreferences.length > 0 
+        ? preferences.dietaryPreferences 
+        : null;
+      
+      // Format ingredients for database storage
+      const ingredientsFormatted = Array.isArray(generatedRecipe.ingredients)
+        ? generatedRecipe.ingredients.map(ing => {
+            if (typeof ing === 'string') {
+              return ing;
+            } else {
+              return `${ing.quantity} ${ing.ingredient}`;
+            }
+          })
+        : [];
+      
+      // Format instructions for database
+      const instructionsJson = JSON.stringify(
+        generatedRecipe.instructions.map((step, index) => ({
+          step: index + 1,
+          instruction: step
+        }))
+      );
+      
+      // Save recipe to database
+      const { data, error: saveError } = await supabase
+        .from('recipes')
+        .insert({
+          title: generatedRecipe.title,
+          description: generatedRecipe.description,
+          prep_time: prepTimeMinutes,
+          cook_time: cookTimeMinutes,
+          total_time: prepTimeMinutes + cookTimeMinutes,
+          servings: 4, // Default value
+          meal_type: preferences.mealType,
+          difficulty: "medium", // Default value
+          instructions: instructionsJson,
+          source: "AI",
+          dietary_tags: dietaryTags,
+          tags: ingredients
+        })
+        .select()
+        .single();
+      
+      if (saveError) {
+        console.error("Error saving recipe:", saveError);
+        toast({
+          title: "Failed to save recipe",
+          description: saveError.message,
+          variant: "destructive"
+        });
+      } else {
+        console.log("Recipe saved successfully:", data);
+        setIsSaved(true);
+        toast({
+          title: "Recipe saved",
+          description: "The recipe has been saved to your collection",
+        });
+      }
+    } catch (err) {
+      console.error("Error in save process:", err);
+      toast({
+        title: "Something went wrong",
+        description: "Failed to save the recipe. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Helper function to render ingredients correctly based on their data structure
@@ -287,9 +379,34 @@ export function RecipeGenerator() {
               )}
             </div>
 
-            <Button onClick={handleReset} variant="outline" className="mt-4">
-              Create Another Recipe
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={handleReset} variant="outline">
+                Create Another Recipe
+              </Button>
+              
+              <Button 
+                onClick={handleSaveRecipe} 
+                disabled={isSaving || isSaved}
+                className="gap-2"
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : isSaved ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Saved to Collection
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4" />
+                    Save to My Recipes
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>
