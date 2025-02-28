@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string, name: string) => {
     try {
       setLoading(true);
-      const { error, data } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -60,8 +60,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Account created successfully!",
         description: "Please check your email for verification instructions.",
       });
-      
-      return data;
     } catch (error: any) {
       toast({
         title: "Error creating account",
@@ -77,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error, data } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -88,8 +86,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Signed in successfully!",
         description: `Welcome back!`,
       });
-      
-      return data;
     } catch (error: any) {
       toast({
         title: "Error signing in",
