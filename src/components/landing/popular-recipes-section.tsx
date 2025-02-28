@@ -67,9 +67,10 @@ const popularRecipes = [
   {
     id: "4",
     title: "Berry Protein Smoothie",
-    image: "https://plus.unsplash.com/premium_photo-1669150852127-2435170681d3?q=80&w=500&auto=format&fit=crop",
+    image: "public/lovable-uploads/3857906b-1629-44c2-8ff2-2b0ecab4b157.png",
     prepTime: 10,
     servings: 1,
     mealType: "breakfast" as const,
   },
 ];
+
