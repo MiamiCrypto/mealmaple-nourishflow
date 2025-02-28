@@ -68,14 +68,21 @@ export function useOpenAI() {
       // Format the error message for display
       let errorMessage = err.message || 'An error occurred with the AI service';
       
-      // Check for quota exceeded error
+      // Detect quota exceeded error
+      // Look for both API limit messages and specific OpenAI billing-related errors
       if (errorMessage.includes('exceeded your current quota') || 
-          errorMessage.includes('billing details')) {
+          errorMessage.includes('billing details') ||
+          errorMessage.includes('quota')) {
         errorMessage = 'Your OpenAI API key has reached its usage limit. Please check your OpenAI account billing details or upgrade your plan.';
       }
       // Check for specific error types
       else if (errorMessage.includes('non-2xx status code')) {
-        errorMessage = 'The AI service is currently unavailable. This could be due to API limits or service disruption. Please try again later.';
+        // Since we know from the logs that the 500 error is likely related to quota issues
+        if (errorMessage.includes('500')) {
+          errorMessage = 'The AI service returned an error (500). This is likely due to API quota limits being exceeded. Please check your OpenAI account billing details.';
+        } else {
+          errorMessage = 'The AI service is currently unavailable. This could be due to API limits or service disruption. Please try again later.';
+        }
       } else if (errorMessage.includes('token limit exceeded')) {
         errorMessage = 'You have reached your monthly token limit. Please try again next month.';
       }

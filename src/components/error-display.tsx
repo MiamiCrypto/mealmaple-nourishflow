@@ -11,7 +11,8 @@ export function ErrorDisplay({ error }: ErrorDisplayProps) {
   
   // Check if it's a quota exceeded error to show a more specific message
   const isQuotaExceeded = error.includes('OpenAI API key has reached its usage limit') || 
-                           error.includes('exceeded your current quota');
+                           error.includes('exceeded your current quota') ||
+                           error.includes('API quota limits being exceeded');
   
   return (
     <Alert variant="destructive" className="mt-4">
