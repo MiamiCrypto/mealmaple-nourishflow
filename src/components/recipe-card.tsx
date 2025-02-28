@@ -15,6 +15,7 @@ export interface RecipeCardProps {
   className?: string;
   style?: React.CSSProperties;
   onAddToMealPlan?: (recipeId: string) => void;
+  onClick?: () => void;
 }
 
 export function RecipeCard({ 
@@ -26,7 +27,8 @@ export function RecipeCard({
   mealType,
   className,
   style,
-  onAddToMealPlan
+  onAddToMealPlan,
+  onClick
 }: RecipeCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   
@@ -37,7 +39,11 @@ export function RecipeCard({
   };
 
   return (
-    <Card className={cn("overflow-hidden hover-scale card-shadow", className)} style={style}>
+    <Card 
+      className={cn("overflow-hidden hover-scale card-shadow", className)} 
+      style={style}
+      onClick={onClick}
+    >
       <div className="relative aspect-video overflow-hidden">
         <img 
           src={image} 
@@ -83,7 +89,10 @@ export function RecipeCard({
           variant="outline" 
           size="sm" 
           className="w-full"
-          onClick={() => onAddToMealPlan && onAddToMealPlan(id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToMealPlan && onAddToMealPlan(id);
+          }}
         >
           Add to Meal Plan
         </Button>
