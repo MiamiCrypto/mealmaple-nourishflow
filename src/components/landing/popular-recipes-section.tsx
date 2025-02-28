@@ -67,7 +67,7 @@ const popularRecipes = [
   {
     id: "4",
     title: "Berry Protein Smoothie",
-    image: "https://images.unsplash.com/photo-1638176066966-86cb7d2cdc25?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    image: "https://images.unsplash.com/photo-1553530666-ba11a90a0868?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
     prepTime: 10,
     servings: 1,
     mealType: "breakfast" as const,
