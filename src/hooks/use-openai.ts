@@ -68,8 +68,13 @@ export function useOpenAI() {
       // Format the error message for display
       let errorMessage = err.message || 'An error occurred with the AI service';
       
+      // Check for quota exceeded error
+      if (errorMessage.includes('exceeded your current quota') || 
+          errorMessage.includes('billing details')) {
+        errorMessage = 'Your OpenAI API key has reached its usage limit. Please check your OpenAI account billing details or upgrade your plan.';
+      }
       // Check for specific error types
-      if (errorMessage.includes('non-2xx status code')) {
+      else if (errorMessage.includes('non-2xx status code')) {
         errorMessage = 'The AI service is currently unavailable. This could be due to API limits or service disruption. Please try again later.';
       } else if (errorMessage.includes('token limit exceeded')) {
         errorMessage = 'You have reached your monthly token limit. Please try again next month.';
