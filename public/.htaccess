@@ -1,8 +1,18 @@
 
-# Proper MIME type for JavaScript modules
+# Proper MIME type for JavaScript modules and JSON
 AddType text/javascript .js
 AddType text/javascript .mjs
+AddType application/javascript .js
+AddType application/javascript .mjs
 AddType application/json .json
+
+# Set appropriate caching headers
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/json "access plus 1 day"
+</IfModule>
 
 # Handle routing for SPA
 <IfModule mod_rewrite.c>
@@ -13,3 +23,10 @@ AddType application/json .json
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>
+
+# Add Content-Type header for JavaScript files
+<FilesMatch "\.(js|mjs)$">
+  <IfModule mod_headers.c>
+    Header set Content-Type "text/javascript"
+  </IfModule>
+</FilesMatch>

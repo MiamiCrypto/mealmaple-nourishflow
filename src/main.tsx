@@ -10,6 +10,7 @@ console.log("Base URL:", document.baseURI);
 console.log("Current hostname:", window.location.hostname);
 console.log("Current pathname:", window.location.pathname);
 console.log("Script loading status: Checking module loading");
+console.log("Document readyState:", document.readyState);
 
 // Create a meta tag to verify domain ownership if needed
 const metaTag = document.createElement('meta');

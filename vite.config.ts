@@ -12,10 +12,16 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   build: {
-    // Ensure proper MIME types when building
+    // Optimize build for deployment
     assetsDir: "assets",
+    outDir: "dist",
+    minify: "terser",
+    sourcemap: false,
     rollupOptions: {
       output: {
+        entryFileNames: "assets/[name].[hash].js",
+        chunkFileNames: "assets/[name].[hash].js",
+        assetFileNames: "assets/[name].[hash].[ext]",
         manualChunks: undefined,
       },
     },
