@@ -16,6 +16,18 @@ touch .nojekyll
 # if you are deploying to a custom domain
 echo www.mealmaple.tech > CNAME
 
+# add a special meta file to force proper MIME types on GitHub Pages
+cat > _headers <<EOL
+/*
+  Content-Type: text/html; charset=UTF-8
+/*.js
+  Content-Type: text/javascript
+/*.mjs
+  Content-Type: text/javascript
+/*.json
+  Content-Type: application/json
+EOL
+
 # initialize git in the dist directory
 git init
 git add -A

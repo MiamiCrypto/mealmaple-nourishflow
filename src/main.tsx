@@ -12,12 +12,19 @@ console.log("Current pathname:", window.location.pathname);
 console.log("Script loading status: Checking module loading");
 console.log("Document readyState:", document.readyState);
 console.log("MIME type test:", document.contentType);
+console.log("Content-Type meta tag:", document.querySelector('meta[http-equiv="Content-Type"]')?.getAttribute('content'));
 
 // Create a meta tag to verify domain ownership if needed
 const metaTag = document.createElement('meta');
 metaTag.name = 'domain-verification';
 metaTag.content = 'www.mealmaple.tech';
 document.head.appendChild(metaTag);
+
+// Create a meta tag to force proper Content-Type
+const contentTypeTag = document.createElement('meta');
+contentTypeTag.httpEquiv = 'Content-Type';
+contentTypeTag.content = 'text/html; charset=utf-8';
+document.head.appendChild(contentTypeTag);
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
