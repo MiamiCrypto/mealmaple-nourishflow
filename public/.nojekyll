@@ -1,0 +1,3 @@
+
+# This file ensures that GitHub Pages doesn't process the site with Jekyll
+# This helps prevent issues with underscore files and ensures proper serving of assets

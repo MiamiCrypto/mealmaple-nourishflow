@@ -11,6 +11,7 @@ console.log("Current hostname:", window.location.hostname);
 console.log("Current pathname:", window.location.pathname);
 console.log("Script loading status: Checking module loading");
 console.log("Document readyState:", document.readyState);
+console.log("MIME type test:", document.contentType);
 
 // Create a meta tag to verify domain ownership if needed
 const metaTag = document.createElement('meta');
@@ -25,3 +26,8 @@ if (rootElement) {
 } else {
   console.error("Root element not found! Cannot mount React app");
 }
+
+// Reporting any JavaScript errors that might occur during initialization
+window.addEventListener('error', function(e) {
+  console.error('Global error caught:', e.message, 'at', e.filename, ':', e.lineno);
+});
