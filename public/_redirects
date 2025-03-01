@@ -1,7 +1,10 @@
 
 # Redirect all traffic to index.html for SPA routing
-/* /index.html 200
+/*    /index.html    200
+
+# Redirect HTTP to HTTPS
+http://mealmaple.tech/*    https://www.mealmaple.tech/:splat    301!
+http://www.mealmaple.tech/*    https://www.mealmaple.tech/:splat    301!
 
 # Redirect naked domain to www
-http://mealmaple.tech/* https://www.mealmaple.tech/:splat 301!
-https://mealmaple.tech/* https://www.mealmaple.tech/:splat 301!
+https://mealmaple.tech/*    https://www.mealmaple.tech/:splat    301!

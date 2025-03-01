@@ -1,0 +1,3 @@
+
+domain=www.mealmaple.tech
+verification=mealmaple-site-verification

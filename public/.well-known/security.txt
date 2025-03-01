@@ -1,0 +1,6 @@
+
+Contact: mailto:admin@mealmaple.tech
+Expires: 2024-12-31T23:59:59.000Z
+Encryption: https://www.mealmaple.tech/pgp-key.txt
+Preferred-Languages: en
+Canonical: https://www.mealmaple.tech/.well-known/security.txt
