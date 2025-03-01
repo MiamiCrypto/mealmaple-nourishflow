@@ -25,6 +25,9 @@ cat > _headers <<EOL
   Content-Type: application/json
 EOL
 
+# Create SPA redirects file
+echo "/* /index.html 200" > _redirects
+
 # initialize git in the dist directory
 git init
 git add -A
