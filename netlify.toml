@@ -9,6 +9,31 @@
   to = "/index.html"
   status = 200
 
+# Improve security headers with proper SSL configuration
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://api.openai.com;"
+
+# Force HTTPS
+[[redirects]]
+  from = "http://:wildcard.mealmaple.tech/*"
+  to = "https://:wildcard.mealmaple.tech/:splat"
+  status = 301
+  force = true
+
+# Redirect naked domain to www
+[[redirects]]
+  from = "https://mealmaple.tech/*"
+  to = "https://www.mealmaple.tech/:splat"
+  status = 301
+  force = true
+
 # These headers ensure proper MIME types for JavaScript files
 [[headers]]
   for = "/*.js"
@@ -19,32 +44,3 @@
   for = "/*.json"
   [headers.values]
     Content-Type = "application/json"
-
-# Improve security
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-
-# Force HTTPS
-[[redirects]]
-  from = "http://mealmaple.tech/*"
-  to = "https://www.mealmaple.tech/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://www.mealmaple.tech/*"
-  to = "https://www.mealmaple.tech/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "https://mealmaple.tech/*"
-  to = "https://www.mealmaple.tech/:splat"
-  status = 301
-  force = true
