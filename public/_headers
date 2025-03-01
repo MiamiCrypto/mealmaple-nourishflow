@@ -1,9 +1,15 @@
 
 /*
   Content-Type: text/html; charset=UTF-8
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
 /*.js
   Content-Type: text/javascript
 /*.mjs
   Content-Type: text/javascript
 /*.json
   Content-Type: application/json
+

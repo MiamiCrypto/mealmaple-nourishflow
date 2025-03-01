@@ -20,7 +20,7 @@
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     Content-Security-Policy = "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://api.openai.com;"
 
-# Force HTTPS - Updated with more specific patterns
+# Force HTTPS - Direct HTTP to HTTPS redirects
 [[redirects]]
   from = "http://mealmaple.tech/*"
   to = "https://www.mealmaple.tech/:splat"
@@ -50,3 +50,10 @@
   for = "/*.json"
   [headers.values]
     Content-Type = "application/json"
+
+# Enable HSTS preloading
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+
