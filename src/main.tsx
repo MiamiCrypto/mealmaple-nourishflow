@@ -9,6 +9,7 @@ console.log("Current URL:", window.location.href);
 console.log("Base URL:", document.baseURI);
 console.log("Current hostname:", window.location.hostname);
 console.log("Current pathname:", window.location.pathname);
+console.log("Base path:", import.meta.env.BASE_URL);
 console.log("Script loading status: Checking module loading");
 console.log("Document readyState:", document.readyState);
 console.log("MIME type test:", document.contentType);

@@ -13,9 +13,6 @@ cd dist
 # create a .nojekyll file to bypass GitHub Pages Jekyll processing
 touch .nojekyll
 
-# if you are deploying to a custom domain
-echo www.mealmaple.tech > CNAME
-
 # add a special meta file to force proper MIME types on GitHub Pages
 cat > _headers <<EOL
 /*

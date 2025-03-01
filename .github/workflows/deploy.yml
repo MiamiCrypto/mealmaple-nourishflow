@@ -1,0 +1,47 @@
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install Dependencies
+        run: npm install
+        
+      - name: Build
+        run: npm run build
+        
+      - name: Configure JavaScript MIME Types
+        run: |
+          cd dist
+          echo "/* /index.html 200" > _redirects
+          cat > _headers <<EOL
+          /*
+            Content-Type: text/html; charset=UTF-8
+          /*.js
+            Content-Type: text/javascript
+          /*.mjs
+            Content-Type: text/javascript
+          /*.json
+            Content-Type: application/json
+          EOL
+          touch .nojekyll
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

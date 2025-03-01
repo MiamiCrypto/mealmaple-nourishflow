@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/",  // Keep base URL as root for custom domain
+  base: "/mealmaple-nourishflow/",  // Set correct base path for GitHub Pages
   server: {
     host: "::",
     port: 8080,
