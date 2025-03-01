@@ -6,7 +6,6 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // Remove base path since Netlify will handle this automatically
   server: {
     host: "::",
     port: 8080,
@@ -19,7 +18,6 @@ export default defineConfig(({ mode }) => ({
     sourcemap: false,
     rollupOptions: {
       output: {
-        // Use standard .js extension as Netlify handles MIME types correctly
         entryFileNames: "assets/[name].[hash].js",
         chunkFileNames: "assets/[name].[hash].js",
         assetFileNames: "assets/[name].[hash].[ext]",
