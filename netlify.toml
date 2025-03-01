@@ -28,3 +28,23 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Force HTTPS
+[[redirects]]
+  from = "http://mealmaple.tech/*"
+  to = "https://www.mealmaple.tech/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.mealmaple.tech/*"
+  to = "https://www.mealmaple.tech/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://mealmaple.tech/*"
+  to = "https://www.mealmaple.tech/:splat"
+  status = 301
+  force = true
