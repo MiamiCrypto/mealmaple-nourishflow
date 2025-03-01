@@ -6,23 +6,22 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/mealmaple-nourishflow/",  // Set correct base path for GitHub Pages
+  base: "/mealmaple-nourishflow/",  // Keep correct base path for GitHub Pages
   server: {
     host: "::",
     port: 8080,
   },
   build: {
-    // Optimize build for deployment
+    // Optimize build for deployment on GitHub Pages
     assetsDir: "assets",
     outDir: "dist",
     minify: "terser",
     sourcemap: false,
     rollupOptions: {
       output: {
-        // Ensure proper JavaScript module format
-        format: 'es',
-        entryFileNames: "assets/[name].[hash].js",
-        chunkFileNames: "assets/[name].[hash].js",
+        // Using '.mjs' extension for JavaScript modules to ensure proper MIME types on GitHub Pages
+        entryFileNames: "assets/[name].[hash].mjs",
+        chunkFileNames: "assets/[name].[hash].mjs",
         assetFileNames: "assets/[name].[hash].[ext]",
         manualChunks: undefined,
       },

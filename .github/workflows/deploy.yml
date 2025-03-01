@@ -28,17 +28,8 @@ jobs:
         run: |
           cd dist
           echo "/* /index.html 200" > _redirects
-          cat > _headers <<EOL
-          /*
-            Content-Type: text/html; charset=UTF-8
-          /*.js
-            Content-Type: text/javascript
-          /*.mjs
-            Content-Type: text/javascript
-          /*.json
-            Content-Type: application/json
-          EOL
           touch .nojekyll
+          echo "*.mjs linguist-language=JavaScript" > .gitattributes
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

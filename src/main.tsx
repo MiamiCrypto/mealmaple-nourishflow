@@ -3,29 +3,25 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Enhanced debugging for custom domain issues
+// Enhanced debugging for MIME type issues
 console.log("Application starting to mount...");
 console.log("Current URL:", window.location.href);
 console.log("Base URL:", document.baseURI);
-console.log("Current hostname:", window.location.hostname);
-console.log("Current pathname:", window.location.pathname);
 console.log("Base path:", import.meta.env.BASE_URL);
-console.log("Script loading status: Checking module loading");
-console.log("Document readyState:", document.readyState);
-console.log("MIME type test:", document.contentType);
-console.log("Content-Type meta tag:", document.querySelector('meta[http-equiv="Content-Type"]')?.getAttribute('content'));
+console.log("JavaScript module test:", import.meta.url);
+console.log("Current script MIME type:", document.currentScript?.type);
 
-// Create a meta tag to verify domain ownership if needed
-const metaTag = document.createElement('meta');
-metaTag.name = 'domain-verification';
-metaTag.content = 'www.mealmaple.tech';
-document.head.appendChild(metaTag);
+// Domain verification meta tag updated in head element
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM fully loaded");
+  console.log("Script elements:", document.querySelectorAll('script').length);
+  console.log("Module scripts:", document.querySelectorAll('script[type="module"]').length);
+});
 
-// Create a meta tag to force proper Content-Type
-const contentTypeTag = document.createElement('meta');
-contentTypeTag.httpEquiv = 'Content-Type';
-contentTypeTag.content = 'text/html; charset=utf-8';
-document.head.appendChild(contentTypeTag);
+// Reporting any JavaScript errors that might occur during initialization
+window.addEventListener('error', function(e) {
+  console.error('Global error caught:', e.message, 'at', e.filename, ':', e.lineno);
+});
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
@@ -34,8 +30,3 @@ if (rootElement) {
 } else {
   console.error("Root element not found! Cannot mount React app");
 }
-
-// Reporting any JavaScript errors that might occur during initialization
-window.addEventListener('error', function(e) {
-  console.error('Global error caught:', e.message, 'at', e.filename, ':', e.lineno);
-});
