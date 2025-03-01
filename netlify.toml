@@ -3,18 +3,15 @@
   command = "npm run build"
   publish = "dist"
 
+# The following redirect rule ensures that all routes are directed to index.html for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# These headers ensure proper MIME types for JavaScript files
 [[headers]]
   for = "/*.js"
-  [headers.values]
-    Content-Type = "text/javascript"
-
-[[headers]]
-  for = "/*.mjs"
   [headers.values]
     Content-Type = "text/javascript"
 
@@ -22,3 +19,12 @@
   for = "/*.json"
   [headers.values]
     Content-Type = "application/json"
+
+# Improve security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

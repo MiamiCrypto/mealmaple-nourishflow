@@ -6,22 +6,22 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/mealmaple-nourishflow/",  // Keep correct base path for GitHub Pages
+  // Remove base path since Netlify will handle this automatically
   server: {
     host: "::",
     port: 8080,
   },
   build: {
-    // Optimize build for deployment on GitHub Pages
+    // Optimize build for deployment on Netlify
     assetsDir: "assets",
     outDir: "dist",
     minify: "terser",
     sourcemap: false,
     rollupOptions: {
       output: {
-        // Using '.mjs' extension for JavaScript modules to ensure proper MIME types on GitHub Pages
-        entryFileNames: "assets/[name].[hash].mjs",
-        chunkFileNames: "assets/[name].[hash].mjs",
+        // Use standard .js extension as Netlify handles MIME types correctly
+        entryFileNames: "assets/[name].[hash].js",
+        chunkFileNames: "assets/[name].[hash].js",
         assetFileNames: "assets/[name].[hash].[ext]",
         manualChunks: undefined,
       },
