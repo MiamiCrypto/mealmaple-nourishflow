@@ -24,6 +24,8 @@ export default defineConfig(({ mode }) => ({
         manualChunks: undefined,
       },
     },
+    // Avoid using native dependencies that might cause issues
+    target: 'es2015',
   },
   plugins: [
     react(),
