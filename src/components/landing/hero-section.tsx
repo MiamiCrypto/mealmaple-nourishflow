@@ -24,14 +24,14 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             Simplify Your <span className="text-primary">Meal Planning</span> Journey
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground">
+          <p className="text-base md:text-lg text-muted-foreground max-w-prose">
             Create personalized meal plans, generate automatic grocery lists, and discover healthy recipes tailored to your preferences.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-2 mt-4">
             <Button 
               size="lg" 
               onClick={onStartOnboarding} 
-              className="w-full sm:w-auto flex items-center justify-center text-white"
+              className="w-full sm:w-auto flex items-center justify-center text-white !bg-primary hover:!bg-primary/90"
             >
               Get Started
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -61,6 +61,13 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
               className="w-full h-56 object-cover"
             />
           </div>
+        </div>
+        <div className="md:hidden mt-6">
+          <img 
+            src="/lovable-uploads/754f4996-6374-4b3a-929c-69dcfbfc6e8e.png" 
+            alt="Healthy meal bowl" 
+            className="w-full h-auto rounded-lg shadow-lg object-cover"
+          />
         </div>
       </div>
     </section>

@@ -52,8 +52,8 @@
 /* Mobile responsive fixes */
 @media (max-width: 640px) {
   .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
   
   h1, h2, h3 {
@@ -89,7 +89,7 @@
   }
 }
 
-/* Ensure buttons have proper spacing on mobile */
+/* Ensure buttons have proper styling on mobile */
 button {
   margin: 0.25rem;
 }
@@ -114,5 +114,20 @@ input, select, textarea {
   button, .button, [type="button"] {
     font-size: 0.875rem !important;
     padding: 0.5rem 1rem !important;
+  }
+  
+  /* Force background colors */
+  .bg-primary {
+    background-color: hsl(var(--primary)) !important;
+  }
+  
+  /* Fix text colors */
+  .text-primary {
+    color: hsl(var(--primary)) !important;
+  }
+  
+  /* Additional Tailwind overrides */
+  .text-white {
+    color: white !important;
   }
 }

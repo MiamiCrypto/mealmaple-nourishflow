@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -180,6 +181,20 @@
   .bg-background {
     background-color: hsl(var(--background)) !important;
   }
+  
+  /* Fix button text styles */
+  button, .button {
+    white-space: nowrap !important;
+  }
+  
+  /* Fix link colors */
+  a {
+    color: inherit !important;
+  }
+  
+  a:hover {
+    @apply text-primary;
+  }
 }
 
 /* Button overrides for mobile */
@@ -193,5 +208,13 @@
 @media (max-width: 640px) {
   input, select, textarea {
     @apply text-base py-2 px-3;
+  }
+}
+
+/* Fix for container padding */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 }

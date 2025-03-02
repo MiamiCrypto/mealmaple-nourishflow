@@ -12,7 +12,7 @@ export function PageTitle({ title, description, className }: PageTitleProps) {
     <div className={cn("space-y-2", className)}>
       <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
       {description && (
-        <p className="text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground max-w-prose">{description}</p>
       )}
     </div>
   );
