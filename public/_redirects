@@ -8,3 +8,7 @@ http://www.mealmaple.tech/*    https://www.mealmaple.tech/:splat    301!
 
 # Redirect naked domain to www
 https://mealmaple.tech/*    https://www.mealmaple.tech/:splat    301!
+
+# Redirect Netlify subdomain to primary domain
+https://mealmaple.netlify.app/*    https://www.mealmaple.tech/:splat    301!
+http://mealmaple.netlify.app/*    https://www.mealmaple.tech/:splat    301!

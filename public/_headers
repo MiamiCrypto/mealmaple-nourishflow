@@ -6,9 +6,13 @@
   X-XSS-Protection: 1; mode=block
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
+  Cache-Control: public, max-age=3600
 /*.js
   Content-Type: text/javascript
+  Cache-Control: public, max-age=31536000
 /*.mjs
   Content-Type: text/javascript
+  Cache-Control: public, max-age=31536000
 /*.json
   Content-Type: application/json
+  Cache-Control: public, max-age=86400

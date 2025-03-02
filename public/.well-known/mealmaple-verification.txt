@@ -1,3 +1,4 @@
 
 domain=www.mealmaple.tech
 verification=mealmaple-site-verification
+netlify-domain=mealmaple.netlify.app
