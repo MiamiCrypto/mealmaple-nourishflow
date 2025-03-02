@@ -26,6 +26,12 @@ export default defineConfig(({ mode }) => ({
     },
     // Avoid using native dependencies that might cause issues
     target: 'es2015',
+    // Add terser options to ensure it works correctly
+    terserOptions: {
+      format: {
+        comments: false,
+      },
+    },
   },
   plugins: [
     react(),
@@ -39,4 +45,8 @@ export default defineConfig(({ mode }) => ({
   },
   // Adding base URL configuration to ensure paths are correctly resolved
   base: '/',
+  // Optimize dependencies to ensure all required packages are available
+  optimizeDeps: {
+    include: ['terser'],
+  },
 }));

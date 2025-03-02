@@ -1,6 +1,6 @@
 
 [build]
-  command = "npm ci && npm run build"
+  command = "npm ci && npm install terser && npm run build"
   publish = "dist"
   # Add environment variables that might help with the build
   environment = { NODE_VERSION = "20", NPM_FLAGS = "--no-optional --no-audit --prefer-offline" }
