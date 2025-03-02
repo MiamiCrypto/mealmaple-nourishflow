@@ -56,19 +56,11 @@
     padding-right: 1rem !important;
   }
   
-  h1, h2, h3 {
-    word-break: break-word;
-  }
-  
-  .btn-responsive {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Force font sizes on mobile */
   h1 {
     font-size: 2rem !important;
     line-height: 2.25rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   h2 {
@@ -80,6 +72,10 @@
     font-size: 1rem !important;
     line-height: 1.5rem !important;
   }
+  
+  .bg-gradient-to-b {
+    background: transparent !important;
+  }
 }
 
 /* Fix for navbar on mobile */
@@ -87,11 +83,17 @@
   nav {
     padding: 0.5rem 1rem;
   }
+  
+  nav .container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
 }
 
 /* Ensure buttons have proper styling on mobile */
 button {
   margin: 0.25rem;
+  border-radius: 9999px !important;
 }
 
 /* Fix for input fields on mobile */
@@ -113,7 +115,8 @@ input, select, textarea {
   /* Fix button text on mobile */
   button, .button, [type="button"] {
     font-size: 0.875rem !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.5rem 1.5rem !important;
+    border-radius: 9999px !important;
   }
   
   /* Force background colors */
@@ -129,5 +132,15 @@ input, select, textarea {
   /* Additional Tailwind overrides */
   .text-white {
     color: white !important;
+  }
+  
+  /* Hide desktop images on mobile */
+  .hidden-mobile {
+    display: none !important;
+  }
+  
+  /* Show mobile images */
+  .mobile-only {
+    display: block !important;
   }
 }

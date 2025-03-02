@@ -24,10 +24,28 @@
     <!-- DNS prefetch and preconnect -->
     <link rel="dns-prefetch" href="//www.mealmaple.tech">
     <link rel="preconnect" href="https://www.mealmaple.tech" crossorigin>
-    <!-- Prevent text size adjustment on orientation change -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Base URL for relative paths -->
     <base href="/">
+    <style>
+      /* Critical CSS for proper rendering */
+      body {
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+      
+      @media (max-width: 640px) {
+        h1 {
+          font-size: 2rem !important;
+          line-height: 2.25rem !important;
+        }
+        button {
+          border-radius: 9999px !important; 
+        }
+      }
+    </style>
   </head>
 
   <body class="bg-background text-foreground antialiased">
