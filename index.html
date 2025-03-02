@@ -24,10 +24,16 @@
     <!-- DNS prefetch and preconnect -->
     <link rel="dns-prefetch" href="//www.mealmaple.tech">
     <link rel="preconnect" href="https://www.mealmaple.tech" crossorigin>
+    
+    <!-- Base URL for relative paths -->
+    <base href="/">
+    
+    <!-- Link to external CSS to ensure styles are loaded -->
+    <link rel="stylesheet" href="/assets/index.css">
   </head>
 
   <body>
     <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

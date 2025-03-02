@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -29,7 +28,7 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
             Create personalized meal plans, generate automatic grocery lists, and discover healthy recipes tailored to your preferences.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" onClick={onStartOnboarding}>
+            <Button size="lg" onClick={onStartOnboarding} className="flex items-center">
               Get Started
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

@@ -49,11 +49,22 @@
   status = 301
   force = true
 
+[[redirects]]
+  from = "http://dulcet-semolina-976e0d.netlify.app/*"
+  to = "https://www.mealmaple.tech/:splat"
+  status = 301
+  force = true
+
 # These headers ensure proper MIME types for JavaScript files
 [[headers]]
   for = "/*.js"
   [headers.values]
     Content-Type = "text/javascript"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Content-Type = "text/css"
 
 [[headers]]
   for = "/*.json"
@@ -72,6 +83,17 @@
 
 [build.processing.html]
   pretty_urls = true
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.images]
+  compress = true
 
 [build.environment]
   NODE_VERSION = "20"
