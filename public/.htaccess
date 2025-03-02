@@ -25,7 +25,7 @@ AddType application/json .json
   RewriteRule ^(.*)$ https://www.mealmaple.tech/$1 [R=301,L]
   
   # Redirect Netlify subdomain to custom domain
-  RewriteCond %{HTTP_HOST} ^mealmaple\.netlify\.app$ [NC]
+  RewriteCond %{HTTP_HOST} ^dulcet-semolina-976e0d\.netlify\.app$ [NC]
   RewriteRule ^(.*)$ https://www.mealmaple.tech/$1 [R=301,L]
   
   # Handle routing for SPA

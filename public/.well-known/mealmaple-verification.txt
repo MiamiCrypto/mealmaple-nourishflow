@@ -1,4 +1,4 @@
 
 domain=www.mealmaple.tech
 verification=mealmaple-site-verification
-netlify-domain=mealmaple.netlify.app
+netlify-domain=dulcet-semolina-976e0d.netlify.app

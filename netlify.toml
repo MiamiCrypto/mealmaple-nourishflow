@@ -42,6 +42,13 @@
   status = 301
   force = true
 
+# Redirect Netlify subdomain to custom domain
+[[redirects]]
+  from = "https://dulcet-semolina-976e0d.netlify.app/*"
+  to = "https://www.mealmaple.tech/:splat"
+  status = 301
+  force = true
+
 # These headers ensure proper MIME types for JavaScript files
 [[headers]]
   for = "/*.js"
