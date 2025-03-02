@@ -2,6 +2,8 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  # Add environment variables that might help with the build
+  environment = { NODE_VERSION = "20", NPM_FLAGS = "--no-optional" }
 
 # The following redirect rule ensures that all routes are directed to index.html for SPA routing
 [[redirects]]
@@ -56,4 +58,3 @@
   for = "/*"
   [headers.values]
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-

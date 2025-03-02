@@ -35,4 +35,6 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Adding base URL configuration to ensure paths are correctly resolved
+  base: '/',
 }));
