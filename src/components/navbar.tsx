@@ -40,10 +40,10 @@ export function Navbar() {
   };
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link to="/" className="font-semibold text-lg">
+          <Link to="/" className="font-semibold text-lg flex items-center">
             <span className="text-primary">Meal</span>Maple
           </Link>
           {!isMobile && (
@@ -60,6 +60,7 @@ export function Navbar() {
               size="icon"
               onClick={toggleMenu}
               aria-label="Toggle menu"
+              className="p-1"
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -111,7 +112,7 @@ export function Navbar() {
 
         {/* Mobile menu dropdown */}
         {isMobile && isMenuOpen && (
-          <div className="absolute top-16 left-0 w-full bg-background border-b shadow-lg animate-slide-in z-50">
+          <div className="absolute top-16 left-0 w-full bg-background border-b shadow-lg z-50">
             <div className="container py-4 flex flex-col gap-4">
               <MobileNavLinks />
               <div className="flex flex-col gap-2 mt-2">

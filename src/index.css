@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -163,6 +162,23 @@
   
   .full-width-mobile {
     @apply w-full;
+  }
+  
+  /* Force Tailwind classes to apply on mobile */
+  .bg-primary {
+    background-color: hsl(var(--primary)) !important;
+  }
+  
+  .text-primary {
+    color: hsl(var(--primary)) !important;
+  }
+  
+  .text-muted-foreground {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+  
+  .bg-background {
+    background-color: hsl(var(--background)) !important;
   }
 }
 

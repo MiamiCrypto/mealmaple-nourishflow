@@ -64,6 +64,22 @@
     width: 100%;
     margin-bottom: 0.5rem;
   }
+
+  /* Force font sizes on mobile */
+  h1 {
+    font-size: 2rem !important;
+    line-height: 2.25rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  p {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
 }
 
 /* Fix for navbar on mobile */
@@ -82,4 +98,21 @@ button {
 input, select, textarea {
   max-width: 100%;
   font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+/* Additional mobile fixes */
+@media (max-width: 640px) {
+  .flex-col-mobile {
+    flex-direction: column !important;
+  }
+
+  .full-width-mobile {
+    width: 100% !important;
+  }
+
+  /* Fix button text on mobile */
+  button, .button, [type="button"] {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+  }
 }
