@@ -8,4 +8,3 @@ http://www.mealmaple.tech/*    https://www.mealmaple.tech/:splat    301!
 
 # Redirect naked domain to www
 https://mealmaple.tech/*    https://www.mealmaple.tech/:splat    301!
-

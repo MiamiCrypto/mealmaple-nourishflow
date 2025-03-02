@@ -47,4 +47,3 @@ AddType application/json .json
   Header always set X-Frame-Options "DENY"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
-
