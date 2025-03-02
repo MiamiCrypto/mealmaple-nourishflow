@@ -90,6 +90,10 @@
     @apply border-border;
   }
 
+  html, body {
+    @apply m-0 p-0 min-h-screen w-full overflow-x-hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -128,5 +132,50 @@
   /* Custom link underline animation */
   .link-underline {
     @apply relative after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+  
+  .grid {
+    @apply grid-cols-1;
+  }
+  
+  .flex-col-mobile {
+    @apply flex-col;
+  }
+  
+  h1 {
+    @apply text-3xl;
+  }
+  
+  h2 {
+    @apply text-2xl;
+  }
+  
+  .hidden-mobile {
+    @apply hidden;
+  }
+  
+  .full-width-mobile {
+    @apply w-full;
+  }
+}
+
+/* Button overrides for mobile */
+@media (max-width: 640px) {
+  .button, button, [type="button"], [type="reset"], [type="submit"] {
+    @apply text-sm px-3 py-2;
+  }
+}
+
+/* Input overrides for mobile */
+@media (max-width: 640px) {
+  input, select, textarea {
+    @apply text-base py-2 px-3;
   }
 }
