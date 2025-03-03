@@ -15,16 +15,16 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
   };
   
   return (
-    <section className="w-full py-6 md:py-12 px-4 md:px-6 bg-white">
-      <div className="container mx-auto space-y-4">
-        <div className="space-y-2">
-          <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+    <section className="w-full py-12 md:py-16 px-4 md:px-6 bg-white">
+      <div className="container mx-auto space-y-6">
+        <div className="space-y-4">
+          <div className="inline-block bg-green-100 text-green-600 px-6 py-2 rounded-full text-base font-medium">
             Smart Meal Planning
           </div>
-          <h1 className="text-4xl font-bold tracking-tight">
-            Simplify Your <span className="text-primary">Meal Planning</span> Journey
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
+            Simplify Your <span className="text-green-600">Meal<br className="hidden sm:block"/> Planning</span> Journey
           </h1>
-          <p className="text-base text-muted-foreground max-w-prose">
+          <p className="text-gray-600 text-xl max-w-prose">
             Create personalized meal plans, generate automatic grocery lists, and discover healthy recipes tailored to your preferences.
           </p>
         </div>
@@ -33,24 +33,24 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
           <Button 
             size="lg" 
             onClick={onStartOnboarding} 
-            className="w-full sm:w-auto flex items-center justify-center text-white bg-primary hover:bg-primary/90 rounded-full"
+            className="w-full sm:w-auto flex items-center justify-center text-white bg-green-600 hover:bg-green-700 rounded-full py-6 px-8 text-lg"
           >
             Get Started
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button 
             size="lg" 
             variant="outline" 
             onClick={handleBrowseRecipes} 
-            className="w-full sm:w-auto rounded-full"
+            className="w-full sm:w-auto rounded-full py-6 px-8 text-lg border-gray-300"
           >
             Browse Recipes
           </Button>
         </div>
         
-        <div className="pt-4">
+        <div className="pt-8">
           <img 
-            src="/lovable-uploads/3857906b-1629-44c2-8ff2-2b0ecab4b157.png" 
+            src="/lovable-uploads/043003c9-a8c1-4ef4-9e8e-cfbc69f8b7cc.png" 
             alt="Delicious healthy meal planning" 
             className="w-full h-auto rounded-lg object-cover shadow-md"
           />
