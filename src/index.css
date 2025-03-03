@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -141,59 +140,87 @@
     @apply px-4;
   }
   
-  .grid {
-    @apply grid-cols-1;
+  /* Tab styling */
+  [role="tablist"] {
+    @apply text-xs;
   }
   
-  .flex-col-mobile {
-    @apply flex-col;
+  [role="tab"] {
+    @apply px-2 py-1.5 text-xs;
+  }
+  
+  /* Dropdown menu styling */
+  [role="dialog"] {
+    @apply max-w-[90vw];
+  }
+  
+  /* Selects */
+  select, [role="combobox"] {
+    @apply text-sm px-2;
+  }
+  
+  /* Cards and grid items */
+  .grid {
+    @apply gap-3;
   }
   
   h1 {
-    @apply text-3xl;
-  }
-  
-  h2 {
     @apply text-2xl;
   }
   
-  .hidden-mobile {
-    @apply hidden;
+  h2 {
+    @apply text-xl;
   }
   
-  .full-width-mobile {
-    @apply w-full;
+  h3 {
+    @apply text-lg;
   }
   
-  /* Force Tailwind classes to apply on mobile */
-  .bg-primary {
-    background-color: hsl(var(--primary)) !important;
+  p {
+    @apply text-sm;
   }
   
-  .text-primary {
-    color: hsl(var(--primary)) !important;
-  }
-  
-  .text-muted-foreground {
-    color: hsl(var(--muted-foreground)) !important;
-  }
-  
-  .bg-background {
-    background-color: hsl(var(--background)) !important;
-  }
-  
-  /* Fix button text styles */
+  /* Force small buttons on mobile */
   button, .button {
+    @apply text-sm px-3 py-2;
     white-space: nowrap !important;
   }
   
-  /* Fix link colors */
+  /* Ensure proper text coloring for links */
   a {
     color: inherit !important;
   }
   
   a:hover {
     @apply text-primary;
+  }
+  
+  /* Fix spacing in recipe cards */
+  .card {
+    @apply overflow-hidden;
+  }
+  
+  .card-content, .card-footer {
+    @apply p-3;
+  }
+  
+  /* Fix filter pills */
+  .pill, .tag, .badge {
+    @apply text-xs px-2 py-0.5;
+  }
+  
+  /* Fix spacing in tabs content */
+  [role="tabpanel"] {
+    @apply space-y-3;
+  }
+  
+  /* Fix recipe search spacing */
+  .recipe-search-form {
+    @apply space-y-2;
+  }
+  
+  .recipe-search-filters {
+    @apply grid grid-cols-2 gap-2;
   }
 }
 
@@ -202,19 +229,45 @@
   .button, button, [type="button"], [type="reset"], [type="submit"] {
     @apply text-sm px-3 py-2;
   }
+  
+  /* Fix dropdown button content */
+  .button svg, button svg {
+    @apply min-w-4 min-h-4;
+  }
+  
+  /* Fix button text truncation */
+  .button span, button span {
+    @apply truncate;
+  }
 }
 
 /* Input overrides for mobile */
 @media (max-width: 640px) {
   input, select, textarea {
     @apply text-base py-2 px-3;
+    font-size: 16px !important; /* This prevents iOS zoom on input focus */
+  }
+  
+  /* Prevent iOS zoom on select elements */
+  select {
+    font-size: 16px !important;
   }
 }
 
 /* Fix for container padding */
 @media (max-width: 640px) {
   .container {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Reduce padding inside cards */
+  .card-content, .card-footer {
+    padding: 0.75rem !important;
+  }
+  
+  /* Reduce gap in grids */
+  .grid-gap-4 {
+    gap: 0.5rem !important;
   }
 }

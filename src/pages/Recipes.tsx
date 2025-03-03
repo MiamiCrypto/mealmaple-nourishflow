@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { PageTitle } from "@/components/ui/page-title";
@@ -34,6 +33,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Extended recipe data for the recipe page
 interface RecipeData {
@@ -176,6 +176,7 @@ const Recipes = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<number | null>(null);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleAddToMealPlan = (recipeId: string) => {
     toast({
@@ -224,33 +225,33 @@ const Recipes = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 container py-8 px-4 md:px-6">
-        <div className="space-y-6 animate-fade-in">
-          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+      <main className="flex-1 container py-6 px-4">
+        <div className="space-y-4 animate-fade-in">
+          <div className="flex flex-col space-y-2">
             <PageTitle 
               title="Recipe Collection" 
               description="Browse our curated collection of healthy recipes"
             />
           </div>
           
-          <Tabs defaultValue="local" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
-              <TabsTrigger value="local" className="flex items-center gap-2">
+          <Tabs defaultValue="local" className={`w-full ${isMobile ? 'text-sm' : ''}`}>
+            <TabsList className={`grid w-full ${isMobile ? 'grid-cols-3 gap-1 text-xs' : 'grid-cols-3'} mb-4`}>
+              <TabsTrigger value="local" className="flex items-center gap-1">
                 <Database className="h-4 w-4" />
-                Local Recipes
+                <span className={isMobile ? "text-xs" : ""}>Local Recipes</span>
               </TabsTrigger>
-              <TabsTrigger value="spoonacular" className="flex items-center gap-2">
+              <TabsTrigger value="spoonacular" className="flex items-center gap-1">
                 <Globe className="h-4 w-4" />
-                Search Online
+                <span className={isMobile ? "text-xs" : ""}>Search Online</span>
               </TabsTrigger>
-              <TabsTrigger value="ai-generator" className="flex items-center gap-2">
+              <TabsTrigger value="ai-generator" className="flex items-center gap-1">
                 <Sparkles className="h-4 w-4" />
-                AI Recipe Creator
+                <span className={isMobile ? "text-xs" : ""}>AI Creator</span>
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="local" className="space-y-6">
-              <div className="flex flex-col md:flex-row gap-4">
+            <TabsContent value="local" className="space-y-4">
+              <div className="flex flex-col gap-3">
                 <div className="relative flex-1">
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -262,13 +263,13 @@ const Recipes = () => {
                   />
                 </div>
                 
-                <div className="flex gap-2 flex-wrap md:flex-nowrap">
+                <div className={`flex gap-2 ${isMobile ? 'flex-wrap' : 'flex-nowrap'}`}>
                   {/* Meal Type Filter */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-1">
+                      <Button variant="outline" size={isMobile ? "sm" : "default"} className="gap-1">
                         <Tag className="h-4 w-4" />
-                        <span className="hidden sm:inline">Meal Type</span>
+                        {!isMobile && <span>Meal Type</span>}
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -299,9 +300,9 @@ const Recipes = () => {
                   {/* Time Filter */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-1">
+                      <Button variant="outline" size={isMobile ? "sm" : "default"} className="gap-1">
                         <Clock className="h-4 w-4" />
-                        <span className="hidden sm:inline">Time</span>
+                        {!isMobile && <span>Time</span>}
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -328,9 +329,9 @@ const Recipes = () => {
                   {/* Difficulty Filter */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-1">
+                      <Button variant="outline" size={isMobile ? "sm" : "default"} className="gap-1">
                         <BadgeCheck className="h-4 w-4" />
-                        <span className="hidden sm:inline">Difficulty</span>
+                        {!isMobile && <span>Difficulty</span>}
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -354,9 +355,9 @@ const Recipes = () => {
                   {/* More Filters */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-1">
+                      <Button variant="outline" size={isMobile ? "sm" : "default"} className="gap-1">
                         <SlidersHorizontal className="h-4 w-4" />
-                        <span className="hidden sm:inline">More Filters</span>
+                        {!isMobile && <span>More Filters</span>}
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -374,18 +375,22 @@ const Recipes = () => {
                   </DropdownMenu>
                   
                   {/* Clear Filters */}
-                  <Button variant="ghost" onClick={handleClearFilters}>
-                    Clear Filters
+                  <Button 
+                    variant="ghost" 
+                    size={isMobile ? "sm" : "default"}
+                    onClick={handleClearFilters}
+                  >
+                    Clear
                   </Button>
                 </div>
               </div>
               
               {/* Filter Pills */}
               {(selectedMealType || selectedDifficulty || selectedTimeFilter) && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mt-2">
                   {selectedMealType && (
-                    <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                      <span>Meal: {selectedMealType.charAt(0).toUpperCase() + selectedMealType.slice(1)}</span>
+                    <div className="bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <span>{selectedMealType.charAt(0).toUpperCase() + selectedMealType.slice(1)}</span>
                       <Button 
                         variant="ghost" 
                         size="icon" 
@@ -397,8 +402,8 @@ const Recipes = () => {
                     </div>
                   )}
                   {selectedDifficulty && (
-                    <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                      <span>Difficulty: {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}</span>
+                    <div className="bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <span>{selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}</span>
                       <Button 
                         variant="ghost" 
                         size="icon" 
@@ -410,8 +415,8 @@ const Recipes = () => {
                     </div>
                   )}
                   {selectedTimeFilter && (
-                    <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                      <span>Time: Under {selectedTimeFilter} minutes</span>
+                    <div className="bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <span>Under {selectedTimeFilter}m</span>
                       <Button 
                         variant="ghost" 
                         size="icon" 
@@ -426,7 +431,7 @@ const Recipes = () => {
               )}
               
               {/* Recipe Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                 {filteredRecipes.map((recipe, index) => (
                   <RecipeCard
                     key={recipe.id}
@@ -438,7 +443,7 @@ const Recipes = () => {
                 ))}
                 
                 {filteredRecipes.length === 0 && (
-                  <div className="col-span-full text-center py-12">
+                  <div className="col-span-full text-center py-8">
                     <h3 className="text-lg font-medium mb-2">No recipes found</h3>
                     <p className="text-muted-foreground">
                       Try adjusting your filters or search terms

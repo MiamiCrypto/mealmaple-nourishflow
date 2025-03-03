@@ -13,6 +13,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { RecipeCard } from "@/components/recipe-card";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function SpoonacularRecipeSearch() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,6 +24,7 @@ export function SpoonacularRecipeSearch() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const { searchRecipes, isLoading } = useSpoonacular();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -71,15 +73,15 @@ export function SpoonacularRecipeSearch() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Search Recipes</h2>
-        <p className="text-muted-foreground">
-          Search for recipes from Spoonacular's extensive database
+    <div className="space-y-4">
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold">Search Recipes</h2>
+        <p className="text-sm text-muted-foreground">
+          Search for recipes from Spoonacular's database
         </p>
         
-        <div className="flex flex-col gap-4 md:flex-row">
-          <div className="flex-1">
+        <div className="flex flex-col gap-3">
+          <div className="w-full">
             <Input
               placeholder="Search recipes..."
               value={searchQuery}
@@ -93,9 +95,9 @@ export function SpoonacularRecipeSearch() {
             />
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-4 gap-2'}`}>
             <Select value={diet} onValueChange={setDiet}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Diet" />
               </SelectTrigger>
               <SelectContent>
@@ -109,7 +111,7 @@ export function SpoonacularRecipeSearch() {
             </Select>
             
             <Select value={cuisine} onValueChange={setCuisine}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Cuisine" />
               </SelectTrigger>
               <SelectContent>
@@ -124,7 +126,7 @@ export function SpoonacularRecipeSearch() {
             </Select>
             
             <Select value={mealType} onValueChange={setMealType}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Meal Type" />
               </SelectTrigger>
               <SelectContent>
@@ -140,7 +142,7 @@ export function SpoonacularRecipeSearch() {
             </Select>
             
             <Select value={maxReadyTime} onValueChange={setMaxReadyTime}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Max Time" />
               </SelectTrigger>
               <SelectContent>
@@ -156,7 +158,8 @@ export function SpoonacularRecipeSearch() {
           <Button
             onClick={handleSearch}
             disabled={isLoading}
-            className="md:w-auto w-full"
+            className="w-full"
+            size={isMobile ? "sm" : "default"}
           >
             {isLoading ? (
               <>
@@ -171,9 +174,9 @@ export function SpoonacularRecipeSearch() {
       </div>
       
       {searchResults.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold">Search Results</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="space-y-3 mt-4">
+          <h3 className="text-lg font-semibold">Search Results</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {searchResults.map((recipe, index) => {
               // Map Spoonacular recipe to our RecipeCard format
               // Here we need to map the mealType - convert Spoonacular dishTypes to our meal types
@@ -204,7 +207,7 @@ export function SpoonacularRecipeSearch() {
       )}
       
       {/* Attribution for Spoonacular API as required */}
-      <div className="text-center text-xs text-muted-foreground mt-8 pt-4 border-t">
+      <div className="text-center text-xs text-muted-foreground mt-6 pt-4 border-t">
         Recipe data provided by <a href="https://spoonacular.com/food-api" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Spoonacular Food API</a>
       </div>
     </div>
