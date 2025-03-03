@@ -51,8 +51,8 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
         <div className="pt-4">
           <img 
             src="/lovable-uploads/754f4996-6374-4b3a-929c-69dcfbfc6e8e.png" 
-            alt="Healthy meal bowl" 
-            className="w-full h-auto rounded-lg object-cover"
+            alt="Healthy meal bowl with fresh vegetables and grains" 
+            className="w-full h-auto rounded-lg object-cover shadow-md"
           />
         </div>
       </div>
