@@ -45,16 +45,8 @@ const App = () => (
                 <Dashboard />
               </ProtectedRoute>
             } />
-            <Route path="/meal-plan" element={
-              <ProtectedRoute>
-                <MealPlan />
-              </ProtectedRoute>
-            } />
-            <Route path="/grocery-list" element={
-              <ProtectedRoute>
-                <GroceryList />
-              </ProtectedRoute>
-            } />
+            <Route path="/meal-plan" element={<MealPlan />} />
+            <Route path="/grocery-list" element={<GroceryList />} />
             <Route path="/recipes" element={<Recipes />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
