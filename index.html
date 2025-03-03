@@ -36,33 +36,15 @@
         text-rendering: optimizeLegibility;
       }
       
-      /* Ensure font styles are applied immediately */
-      h1, h2, h3, h4, h5, h6 {
-        font-weight: 700;
-      }
-      
-      /* Force correct button styling */
-      button {
-        border-radius: 9999px !important;
-        font-weight: 500 !important;
-      }
-      
       @media (max-width: 640px) {
         h1 {
           font-size: 2rem !important;
           line-height: 2.25rem !important;
         }
+        button {
+          border-radius: 9999px !important; 
+        }
       }
-      
-      /* Ensure Tailwind loads properly */
-      .flex { display: flex !important; }
-      .flex-col { flex-direction: column !important; }
-      .items-center { align-items: center !important; }
-      .justify-center { justify-content: center !important; }
-      .text-primary { color: hsl(142, 76%, 36%) !important; }
-      .bg-primary { background-color: hsl(142, 76%, 36%) !important; }
-      .bg-white { background-color: white !important; }
-      .container { width: 100% !important; max-width: 1280px !important; margin-left: auto !important; margin-right: auto !important; }
     </style>
   </head>
 

@@ -9,7 +9,7 @@
 @media (min-width: 768px) {
   #root {
     max-width: 1280px;
-    padding: 0;
+    padding: 0 1rem;
   }
 }
 
@@ -57,22 +57,20 @@
   }
   
   h1 {
-    font-size: 2.5rem !important;
-    line-height: 2.75rem !important;
+    font-size: 2rem !important;
+    line-height: 2.25rem !important;
     margin-top: 0.5rem !important;
     margin-bottom: 0.5rem !important;
-    font-weight: 700 !important;
   }
 
   h2 {
-    font-size: 1.75rem !important;
-    line-height: 2.25rem !important;
-    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
   }
 
   p {
-    font-size: 1.125rem !important;
-    line-height: 1.75rem !important;
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
   }
   
   .bg-gradient-to-b {
@@ -83,7 +81,7 @@
 /* Fix for navbar on mobile */
 @media (max-width: 768px) {
   nav {
-    padding: 0.75rem 1rem !important;
+    padding: 0.5rem 1rem;
   }
   
   nav .container {
@@ -96,7 +94,6 @@
 button {
   margin: 0.25rem;
   border-radius: 9999px !important;
-  font-weight: 500 !important;
 }
 
 /* Fix for input fields on mobile */
@@ -117,10 +114,9 @@ input, select, textarea {
 
   /* Fix button text on mobile */
   button, .button, [type="button"] {
-    font-size: 1rem !important;
-    padding: 0.625rem 1.5rem !important;
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1.5rem !important;
     border-radius: 9999px !important;
-    font-weight: 500 !important;
   }
   
   /* Force background colors */
@@ -146,22 +142,5 @@ input, select, textarea {
   /* Show mobile images */
   .mobile-only {
     display: block !important;
-  }
-}
-
-/* Landing page specific styles */
-.container {
-  max-width: 1280px !important;
-}
-
-.hero-section h1 {
-  font-size: 3.5rem !important;
-  line-height: 1.1 !important;
-  font-weight: 700 !important;
-}
-
-@media (max-width: 768px) {
-  .hero-section h1 {
-    font-size: 2.5rem !important;
   }
 }
