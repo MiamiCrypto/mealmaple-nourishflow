@@ -111,5 +111,5 @@
 [build.processing.images]
   compress = true
 
-[build.environment]
-  NODE_VERSION = "20"
+# Note: we've removed the duplicate [build.environment] section here
+# since it's already defined in the [build] section above
