@@ -50,8 +50,8 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
         
         <div className="pt-4">
           <img 
-            src="/placeholder.svg" 
-            alt="Healthy meal planning illustration" 
+            src="/lovable-uploads/3857906b-1629-44c2-8ff2-2b0ecab4b157.png" 
+            alt="Delicious healthy meal planning" 
             className="w-full h-auto rounded-lg object-cover shadow-md"
           />
         </div>
