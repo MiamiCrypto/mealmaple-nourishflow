@@ -48,12 +48,30 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
           </Button>
         </div>
         
-        <div className="pt-8">
-          <img 
-            src="/placeholder.svg" 
-            alt="Delicious healthy meal planning" 
-            className="w-full h-auto rounded-lg object-cover shadow-md"
-          />
+        <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-64 md:h-80">
+            <img 
+              src="https://images.unsplash.com/photo-1543352634-99a5d50ae78e?w=800&auto=format&fit=crop&q=80" 
+              alt="Meal preparation with fresh ingredients" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="space-y-4">
+            <div className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
+              <img 
+                src="https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=500&auto=format&fit=crop&q=80" 
+                alt="Organized meal prep containers" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
+              <img 
+                src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=500&auto=format&fit=crop&q=80" 
+                alt="Fresh vegetables for cooking" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>
