@@ -104,7 +104,7 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
               boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
             }}
             onError={(e) => {
-              console.error("Image failed to load");
+              console.error("Hero image failed to load");
               // Fallback if image fails to load
               const target = e.target as HTMLImageElement;
               target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
