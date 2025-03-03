@@ -48,26 +48,26 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
           </Button>
         </div>
         
-        <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-64 md:h-80">
+        <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-64 md:h-80">
             <img 
-              src="https://images.unsplash.com/photo-1543352634-99a5d50ae78e?w=800&auto=format&fit=crop&q=80" 
-              alt="Meal preparation with fresh ingredients" 
+              src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80" 
+              alt="Single healthy meal with vegetables" 
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="space-y-4">
-            <div className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
+          <div className="space-y-6">
+            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
               <img 
-                src="https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=500&auto=format&fit=crop&q=80" 
-                alt="Organized meal prep containers" 
+                src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop&q=80" 
+                alt="Colorful vegetable salad bowl" 
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
+            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
               <img 
-                src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=500&auto=format&fit=crop&q=80" 
-                alt="Fresh vegetables for cooking" 
+                src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=500&auto=format&fit=crop&q=80" 
+                alt="Single portion healthy breakfast bowl" 
                 className="w-full h-full object-cover"
               />
             </div>
