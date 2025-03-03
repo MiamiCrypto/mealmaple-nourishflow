@@ -3,7 +3,7 @@ import { Navbar } from "@/components/navbar";
 import { PageTitle } from "@/components/ui/page-title";
 import { MealPlanner } from "@/components/meal-planner";
 import { Button } from "@/components/ui/button";
-import { Download, LogIn, Printer, Share2 } from "lucide-react";
+import { Download, LogIn, Printer, Share2, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +29,16 @@ const MealPlan = () => {
     }
   };
 
+  const handleCreateGroceryList = () => {
+    toast({
+      title: "Creating grocery list",
+      description: "Generating list from your meal plan ingredients",
+    });
+    
+    // Navigate to grocery list page
+    navigate("/grocery-list");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -40,7 +50,7 @@ const MealPlan = () => {
               description="Organize your meals for the week ahead"
             />
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center flex-wrap gap-2">
               {!user ? (
                 <Button onClick={() => navigate("/auth")} variant="outline" size="sm">
                   <LogIn className="h-4 w-4 mr-2" />
@@ -52,6 +62,10 @@ const MealPlan = () => {
                   Save Plan
                 </Button>
               )}
+              <Button variant="outline" size="sm" onClick={handleCreateGroceryList}>
+                <ShoppingBag className="h-4 w-4 mr-2" />
+                Create Grocery List
+              </Button>
               <Button variant="outline" size="sm">
                 <Printer className="h-4 w-4 mr-2" />
                 Print
