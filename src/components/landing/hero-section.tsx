@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Calendar, ShoppingBag } from "lucide-react";
 
 interface HeroSectionProps {
   onStartOnboarding: () => void;
@@ -12,6 +12,14 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
   
   const handleBrowseRecipes = () => {
     navigate("/recipes");
+  };
+  
+  const handleViewMealPlan = () => {
+    navigate("/meal-plan");
+  };
+  
+  const handleViewGroceryList = () => {
+    navigate("/grocery-list");
   };
   
   return (
@@ -45,6 +53,28 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
             className="w-full sm:w-auto rounded-full py-6 px-8 text-lg border-gray-300"
           >
             Browse Recipes
+          </Button>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <Button 
+            variant="outline"
+            size="lg" 
+            onClick={handleViewMealPlan} 
+            className="w-full sm:w-auto flex items-center justify-center rounded-full py-6 px-8 text-lg"
+          >
+            <Calendar className="mr-2 h-5 w-5" />
+            View Meal Planner
+          </Button>
+          
+          <Button 
+            variant="outline"
+            size="lg" 
+            onClick={handleViewGroceryList} 
+            className="w-full sm:w-auto flex items-center justify-center rounded-full py-6 px-8 text-lg"
+          >
+            <ShoppingBag className="mr-2 h-5 w-5" />
+            Open Grocery List
           </Button>
         </div>
         
