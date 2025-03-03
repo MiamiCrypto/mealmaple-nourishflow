@@ -43,10 +43,56 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    
+    // Add inline styles to ensure rendering regardless of CSS loading
+    const getBaseStyles = () => {
+      const styles: React.CSSProperties = {
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '9999px',
+        fontWeight: 500,
+        cursor: 'pointer',
+        transition: 'all 0.2s ease'
+      };
+      
+      // Add variant-specific styles
+      if (variant === 'default' || !variant) {
+        styles.backgroundColor = 'hsl(142, 76%, 36%)';
+        styles.color = 'white';
+      } else if (variant === 'outline') {
+        styles.backgroundColor = 'transparent';
+        styles.color = '#333';
+        styles.border = '1px solid #ddd';
+      } else if (variant === 'secondary') {
+        styles.backgroundColor = '#f4f4f5';
+        styles.color = '#18181b';
+      }
+      
+      // Add size-specific styles
+      if (size === 'lg') {
+        styles.height = '3rem';
+        styles.padding = '0 2rem';
+        styles.fontSize = '1rem';
+      } else if (size === 'sm') {
+        styles.height = '2.25rem';
+        styles.padding = '0 1rem';
+        styles.fontSize = '0.875rem';
+      } else {
+        // default
+        styles.height = '2.75rem';
+        styles.padding = '0 1.5rem';
+        styles.fontSize = '0.875rem';
+      }
+      
+      return styles;
+    };
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        style={getBaseStyles()}
         {...props}
       />
     )

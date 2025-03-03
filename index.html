@@ -26,6 +26,7 @@
     <link rel="preconnect" href="https://www.mealmaple.tech" crossorigin>
     <!-- Base URL for relative paths -->
     <base href="/">
+    <!-- Inline critical CSS to ensure minimum styling even before CSS files load -->
     <style>
       /* Critical CSS for proper rendering */
       body {
@@ -34,6 +35,7 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       }
       
       /* Ensure font styles are applied immediately */
@@ -63,11 +65,41 @@
       .bg-primary { background-color: hsl(142, 76%, 36%) !important; }
       .bg-white { background-color: white !important; }
       .container { width: 100% !important; max-width: 1280px !important; margin-left: auto !important; margin-right: auto !important; }
+      
+      /* Force React root element to take full height */
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      /* Mobile-first responsive styling */
+      @media screen and (max-width: 768px) {
+        .container {
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
+        }
+      }
+      
+      /* Add a fallback background color */
+      html, body {
+        background-color: #ffffff;
+      }
     </style>
+    <!-- Preload CSS -->
+    <link rel="preload" href="/src/index.css" as="style">
+    <link rel="preload" href="/src/App.css" as="style">
   </head>
 
   <body class="bg-background text-foreground antialiased">
     <div id="root"></div>
+    <!-- Add noscript fallback -->
+    <noscript>
+      <div style="padding: 2rem; text-align: center;">
+        <h1>JavaScript Required</h1>
+        <p>Please enable JavaScript to use MealMaple.</p>
+      </div>
+    </noscript>
     <!-- Lovable script tag for enabling new features -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
