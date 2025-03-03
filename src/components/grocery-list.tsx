@@ -8,6 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Search, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+interface GroceryItem {
+  id: string;
+  name: string;
+  category: string;
+  checked: boolean;
+}
+
 export function GroceryList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [newItem, setNewItem] = useState("");
@@ -78,7 +85,7 @@ export function GroceryList() {
   });
 
   return (
-    <Card className="border shadow-sm animate-scale-in">
+    <Card className="border shadow-sm w-full animate-scale-in">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -150,11 +157,4 @@ export function GroceryList() {
       </CardContent>
     </Card>
   );
-}
-
-interface GroceryItem {
-  id: string;
-  name: string;
-  category: string;
-  checked: boolean;
 }
