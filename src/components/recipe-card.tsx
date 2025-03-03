@@ -31,11 +31,17 @@ export function RecipeCard({
   onClick
 }: RecipeCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   const toggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsFavorite(!isFavorite);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    console.log(`Image failed to load: ${image}`);
   };
 
   return (
@@ -46,9 +52,10 @@ export function RecipeCard({
     >
       <div className="relative aspect-video overflow-hidden">
         <img 
-          src={image} 
+          src={imageError ? "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" : image} 
           alt={title}
           className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+          onError={handleImageError}
         />
         <div className="absolute top-2 right-2">
           <Button 

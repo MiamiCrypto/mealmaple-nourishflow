@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -67,10 +66,9 @@ const popularRecipes = [
   {
     id: "4",
     title: "Berry Protein Smoothie",
-    image: "public/lovable-uploads/3857906b-1629-44c2-8ff2-2b0ecab4b157.png",
+    image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
     prepTime: 10,
     servings: 1,
     mealType: "breakfast" as const,
   },
 ];
-
