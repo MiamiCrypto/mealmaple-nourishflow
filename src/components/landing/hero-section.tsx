@@ -32,7 +32,7 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
             <Button 
               size="lg" 
               onClick={onStartOnboarding} 
-              className="w-full sm:w-auto font-medium"
+              className="w-full sm:w-auto font-medium !rounded-full !h-12 !px-8 !py-3 !text-base"
             >
               Get Started
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -41,7 +41,7 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
               size="lg" 
               variant="outline" 
               onClick={handleBrowseRecipes} 
-              className="w-full sm:w-auto font-medium"
+              className="w-full sm:w-auto font-medium !rounded-full !h-12 !px-8 !py-3 !text-base"
             >
               Browse Recipes
             </Button>
@@ -53,6 +53,12 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
             src="/lovable-uploads/754f4996-6374-4b3a-929c-69dcfbfc6e8e.png" 
             alt="Healthy meal bowl" 
             className="w-full h-auto rounded-lg object-cover shadow-lg"
+            onError={(e) => {
+              console.error("Image failed to load");
+              // Fallback if image fails to load
+              const target = e.target as HTMLImageElement;
+              target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
+            }}
           />
         </div>
       </div>
