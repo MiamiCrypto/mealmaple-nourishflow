@@ -48,29 +48,20 @@ export function HeroSection({ onStartOnboarding }: HeroSectionProps) {
           </Button>
         </div>
         
-        <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-64 md:h-80">
+        <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-64 md:h-96">
             <img 
               src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80" 
               alt="Single healthy meal with vegetables" 
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="space-y-6">
-            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
-              <img 
-                src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop&q=80" 
-                alt="Colorful vegetable salad bowl" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-[48%]">
-              <img 
-                src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=500&auto=format&fit=crop&q=80" 
-                alt="Single portion healthy breakfast bowl" 
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-64 md:h-96">
+            <img 
+              src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop&q=80" 
+              alt="Colorful vegetable salad bowl" 
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>
